@@ -5,9 +5,9 @@
   "type": "module",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --host 0.0.0.0 --port 4200",
-    "build": "ng build",
-    "test": "ng test",
+    "start": "ng serve angular-ai-contacts --host 0.0.0.0 --port 4200",
+    "build": "ng build angular-ai-contacts",
+    "test": "ng test angular-ai-contacts",
     "lint": "ng lint"
   },
   "dependencies": {
@@ -23,7 +23,7 @@
     "zone.js": "^0.15.0"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^22.0.5",
+    "@angular/build": "^22.0.5",
     "@angular/cli": "^22.0.5",
     "@angular/compiler-cli": "^22.0.5",
     "typescript": "^6.0.0"
