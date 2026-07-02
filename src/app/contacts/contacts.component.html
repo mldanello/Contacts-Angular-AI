@@ -1,0 +1,76 @@
+<section class="page-card">
+  <div *ngIf="!authService.isAuthenticated(); else contactsApp" class="info-message">
+    <h2>Sign in to manage contacts</h2>
+    <form (ngSubmit)="login()">
+      <div class="input-group">
+        <label for="username">User name</label>
+        <input id="username" name="username" [(ngModel)]="username" required />
+      </div>
+      <div class="input-group">
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" [(ngModel)]="password" required />
+      </div>
+      <div class="actions">
+        <button class="primary" type="submit">Sign in</button>
+      </div>
+      <p *ngIf="authError" class="error-message">{{ authError }}</p>
+    </form>
+  </div>
+
+  <ng-template #contactsApp>
+    <div class="contacts-layout">
+      <div>
+        <div class="actions" style="justify-content: space-between;">
+          <h2>Contacts</h2>
+          <button class="primary" type="button" (click)="selectContact(newContactTemplate())">New</button>
+        </div>
+        <div class="contact-list">
+          <div *ngFor="let contact of contacts()" class="contact-item">
+            <span>{{ contact.firstName }} {{ contact.lastName }}</span>
+            <div>
+              <button type="button" (click)="selectContact(contact)">Edit</button>
+              <button type="button" class="secondary" (click)="removeContact(contact.id)">Delete</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="contact-detail">
+        <h2>{{ selectedContact().id ? 'Edit Contact' : 'Add Contact' }}</h2>
+        <form #contactForm="ngForm" (ngSubmit)="saveContact()">
+          <div class="input-group">
+            <label for="firstName">First name</label>
+            <input id="firstName" name="firstName" [(ngModel)]="selectedContact().firstName" required />
+          </div>
+          <div class="input-group">
+            <label for="lastName">Last name</label>
+            <input id="lastName" name="lastName" [(ngModel)]="selectedContact().lastName" required />
+          </div>
+          <div class="input-group">
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" [(ngModel)]="selectedContact().email" required />
+          </div>
+          <div class="input-group">
+            <label for="phone">Phone</label>
+            <input id="phone" name="phone" [(ngModel)]="selectedContact().phone" required />
+          </div>
+          <div class="input-group">
+            <label for="company">Company</label>
+            <input id="company" name="company" [(ngModel)]="selectedContact().company" />
+          </div>
+          <div class="input-group">
+            <label for="notes">Notes</label>
+            <textarea id="notes" name="notes" rows="4" [(ngModel)]="selectedContact().notes"></textarea>
+          </div>
+          <div class="actions">
+            <button class="primary" type="submit">Save</button>
+            <button class="secondary" type="button" (click)="selectContact(newContactTemplate())">Reset</button>
+            <button class="danger" type="button" *ngIf="selectedContact().id" (click)="removeContact(selectedContact().id)">Delete</button>
+          </div>
+        </form>
+        <p *ngIf="message" class="info-message">{{ message }}</p>
+        <p *ngIf="error" class="error-message">{{ error }}</p>
+      </div>
+    </div>
+  </ng-template>
+</section>

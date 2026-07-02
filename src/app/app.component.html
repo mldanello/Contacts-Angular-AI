@@ -1,0 +1,12 @@
+<div class="app-shell">
+  <header class="app-header">
+    <nav class="app-nav">
+      <span class="app-title">MD Management Studio</span>
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a>
+      <a routerLink="/contacts" routerLinkActive="active">Contacts</a>
+    </nav>
+  </header>
+  <main class="app-container">
+    <router-outlet></router-outlet>
+  </main>
+</div>

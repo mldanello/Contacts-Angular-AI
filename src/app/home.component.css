@@ -1,0 +1,53 @@
+.hero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  align-items: center;
+}
+
+.hero-text h1 {
+  margin: 0 0 1rem;
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  line-height: 1.05;
+}
+
+.hero-text p {
+  margin: 0;
+  max-width: 45rem;
+  color: #475569;
+}
+
+.hero-graphic {
+  background: linear-gradient(135deg,#0ea5e9,#6366f1);
+  border-radius: 1.5rem;
+  min-height: 320px;
+  position: relative;
+  color: #fff;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+}
+
+.hero-graphic::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at top left, rgba(255,255,255,0.35), transparent 28%),
+              radial-gradient(circle at bottom right, rgba(255,255,255,0.18), transparent 25%);
+}
+
+.hero-graphic-content {
+  position: relative;
+  text-align: center;
+  z-index: 1;
+}
+
+.hero-graphic h2 {
+  margin: 0 0 1rem;
+  font-size: clamp(1.8rem, 3vw, 2.8rem);
+}
+
+.hero-graphic p {
+  margin: 0;
+  color: rgba(255,255,255,0.88);
+}

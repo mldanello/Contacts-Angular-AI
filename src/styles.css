@@ -1,0 +1,250 @@
+:root {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color-scheme: light;
+  background: #f2f4f8;
+  color: #102a43;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
+}
+
+button, input, textarea, select {
+  font: inherit;
+}
+
+.app-shell {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  min-height: 100vh;
+}
+
+.app-header {
+  background: #0f172a;
+  color: #f8fafc;
+  padding: 0.75rem 1.5rem;
+}
+
+.app-nav {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.app-nav a {
+  color: #cbd5e1;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.app-nav a.active {
+  color: #f8fafc;
+}
+
+.app-nav a:hover {
+  color: #e2e8f0;
+}
+
+.app-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.app-container {
+  padding: 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.page-card {
+  background: #ffffff;
+  border-radius: 1rem;
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
+  padding: 1.5rem;
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  align-items: center;
+}
+
+.hero-text h1 {
+  margin: 0 0 1rem;
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  line-height: 1.05;
+}
+
+.hero-text p {
+  margin: 0;
+  max-width: 45rem;
+  color: #475569;
+}
+
+.hero-graphic {
+  background: linear-gradient(135deg,#0ea5e9,#6366f1);
+  border-radius: 1.5rem;
+  min-height: 320px;
+  position: relative;
+  color: #fff;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+}
+
+.hero-graphic::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at top left, rgba(255,255,255,0.35), transparent 28%),
+              radial-gradient(circle at bottom right, rgba(255,255,255,0.18), transparent 25%);
+}
+
+.hero-graphic-content {
+  position: relative;
+  text-align: center;
+  z-index: 1;
+}
+
+.hero-graphic h2 {
+  margin: 0 0 1rem;
+  font-size: clamp(1.8rem, 3vw, 2.8rem);
+}
+
+.hero-graphic p {
+  margin: 0;
+  color: rgba(255,255,255,0.88);
+}
+
+.contacts-layout {
+  display: grid;
+  grid-template-columns: 1.2fr 0.9fr;
+  gap: 1.5rem;
+}
+
+.contact-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.contact-item {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 1rem;
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.contact-item button {
+  border: none;
+  background: transparent;
+  color: #2563eb;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.contact-item button:hover {
+  color: #1d4ed8;
+}
+
+.contact-detail {
+  display: grid;
+  gap: 1rem;
+}
+
+.contact-detail form {
+  display: grid;
+  gap: 1rem;
+}
+
+.input-group {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.input-group label {
+  font-weight: 600;
+  color: #334155;
+}
+
+.input-group input,
+.input-group textarea {
+  width: 100%;
+  border-radius: 0.75rem;
+  border: 1px solid #cbd5e1;
+  padding: 0.9rem 1rem;
+  background: #ffffff;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+button.primary {
+  border: none;
+  color: #fff;
+  background: #2563eb;
+  border-radius: 0.75rem;
+  padding: 0.85rem 1.25rem;
+  cursor: pointer;
+}
+
+button.secondary {
+  border: 1px solid #cbd5e1;
+  background: #f8fafc;
+  color: #334155;
+  border-radius: 0.75rem;
+  padding: 0.85rem 1.25rem;
+  cursor: pointer;
+}
+
+button.danger {
+  border: none;
+  background: #ef4444;
+  color: white;
+  border-radius: 0.75rem;
+  padding: 0.85rem 1.25rem;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.error-message,
+.info-message {
+  padding: 1rem;
+  border-radius: 1rem;
+}
+
+.error-message {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.info-message {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+@media (max-width: 980px) {
+  .hero {
+    grid-template-columns: 1fr;
+  }
+
+  .contacts-layout {
+    grid-template-columns: 1fr;
+  }
+}
