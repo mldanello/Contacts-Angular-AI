@@ -16,6 +16,7 @@ import { ContactList } from '../models/contact-list.model';
 const mockContacts: ContactDetail[] = [
   {
     id: 1,
+    tenantId: 1,
     firstName: 'Maya',
     middleName: '',
     lastName: 'Dane',
@@ -29,6 +30,7 @@ const mockContacts: ContactDetail[] = [
   },
   {
     id: 2,
+    tenantId: 1,
     firstName: 'James',
     middleName: '',
     lastName: 'Harper',
@@ -75,6 +77,7 @@ export class MockBackendInterceptor implements HttpInterceptor {
           const maxId = mockContacts.reduce((max, item) => Math.max(max, item.id), 0);
           const newContact: ContactDetail = {
             id: maxId + 1,
+            tenantId: body.tenantId ?? 1,
             firstName: body.firstName ?? '',
             middleName: body.middleName ?? '',
             lastName: body.lastName,

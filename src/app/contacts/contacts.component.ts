@@ -109,7 +109,7 @@ export class ContactsComponent {
     this.error.set('');
   }
 
-  setSelectedContactField<K extends keyof Omit<ContactDetail, 'id' | 'isActive' | 'createdAt' | 'modifiedAt'>>(
+  setSelectedContactField<K extends keyof Omit<ContactDetail, 'id' | 'tenantId' | 'isActive' | 'createdAt' | 'modifiedAt'>>(
     field: K,
     value: ContactDetail[K]
   ): void {
@@ -181,8 +181,11 @@ export class ContactsComponent {
   }
 
   newContactTemplate(): ContactDetail {
+    const now = new Date().toISOString();
+
     return {
       id: 0,
+      tenantId: 1,
       firstName: '',
       middleName: '',
       lastName: '',
@@ -191,8 +194,8 @@ export class ContactsComponent {
       web: '',
       notes: '',
       isActive: true,
-      createdAt: '',
-      modifiedAt: ''
+      createdAt: now,
+      modifiedAt: now
     };
   }
 

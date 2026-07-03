@@ -1,5 +1,6 @@
 export interface ContactDetail {
   id: number;
+  tenantId: number;
   firstName: string;
   middleName: string;
   lastName: string;
