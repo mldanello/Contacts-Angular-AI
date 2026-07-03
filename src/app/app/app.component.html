@@ -4,10 +4,11 @@
       <span class="app-title">MD Management Studio</span>
       <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a>
       <a routerLink="/contacts" routerLinkActive="active">Contacts</a>
-      <button class="nav-action" *ngIf="authService.isAuthenticated(); else loginLink" type="button" (click)="logout()">Logout</button>
-      <ng-template #loginLink>
+      @if (authService.isAuthenticated()) {
+        <button class="nav-action" type="button" (click)="logout()">Logout</button>
+      } @else {
         <a routerLink="/login" routerLinkActive="active">Login</a>
-      </ng-template>
+      }
     </nav>
   </header>
   <main class="app-container">

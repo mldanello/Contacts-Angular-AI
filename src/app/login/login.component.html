@@ -13,7 +13,9 @@
       <div class="actions">
         <button class="primary" type="submit" [disabled]="loading()">{{ loading() ? 'Signing in…' : 'Sign in' }}</button>
       </div>
-      <p *ngIf="authError()" class="error-message">{{ authError() }}</p>
+      @if (authError()) {
+        <p class="error-message">{{ authError() }}</p>
+      }
     </form>
   </div>
 </section>
