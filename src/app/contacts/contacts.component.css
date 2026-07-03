@@ -7,6 +7,10 @@
 .contact-list {
   display: grid;
   gap: 1rem;
+  max-height: 48rem;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+  position: relative;
 }
 
 .contact-item {
@@ -17,9 +21,57 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
 }
 
-.contact-item button {
+.new-contact-button {
+  width: 9rem;
+  min-height: 2.5rem;
+  align-self: center;
+  justify-self: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 0.75rem;
+  border: none;
+  background: #2563eb;
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+  margin-top: 0.5rem;
+}
+
+.new-contact-button {
+  width: 9rem;
+  min-height: 2.5rem;
+  align-self: center;
+  justify-self: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 0.75rem;
+  border: none;
+  background: #2563eb;
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+  margin-top: 0.5rem;
+  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.15);
+}
+
+.new-contact-button:hover {
+  background: #1d4ed8;
+}
+
+.contact-item.selected {
+  background: #eff6ff;
+  border-color: #93c5fd;
+}
+
+.contact-item button,
+.contact-actions button {
   border: none;
   background: transparent;
   color: #2563eb;
@@ -27,13 +79,59 @@
   font-weight: 600;
 }
 
-.contact-item button:hover {
+.contact-item button:hover,
+.contact-actions button:hover {
   color: #1d4ed8;
+}
+
+.contact-link {
+  color: #1d4ed8;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.contact-link:hover {
+  text-decoration: underline;
+}
+
+.contact-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
 }
 
 .contact-detail {
   display: grid;
   gap: 1rem;
+}
+
+.contact-view {
+  display: grid;
+  gap: 0.75rem;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 1rem;
+  padding: 1rem;
+}
+
+.detail-row {
+  display: grid;
+  grid-template-columns: 9rem 1fr;
+  gap: 0.75rem;
+  align-items: start;
+}
+
+.detail-label {
+  font-weight: 600;
+  color: #475569;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.detail-label::after {
+  content: ':';
+  margin-left: 0.25rem;
+  color: #64748b;
 }
 
 .contact-detail form {

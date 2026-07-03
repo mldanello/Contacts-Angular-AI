@@ -23,6 +23,8 @@ export class ContactsComponent {
 
   contacts = signal<Contact[]>([]);
   selectedContact = signal<Contact>(this.newContactTemplate());
+  editing = signal(false);
+  originalContact = signal<Contact | null>(null);
 
   constructor() {
     if (!this.authService.isAuthenticated()) {
@@ -40,8 +42,37 @@ export class ContactsComponent {
     });
   }
 
-  selectContact(contact: Contact): void {
+  selectContact(contact: Contact, edit = false): void {
     this.selectedContact.set({ ...contact });
+    this.message = '';
+    this.error = '';
+
+    if (contact.id) {
+      this.originalContact.set({ ...contact });
+      this.editing.set(edit);
+    } else {
+      this.originalContact.set(null);
+      this.editing.set(true);
+    }
+  }
+
+  goToEditMode(contact?: Contact): void {
+    const selected = contact ? { ...contact } : { ...this.selectedContact() };
+    this.selectedContact.set(selected);
+    this.originalContact.set({ ...selected });
+    this.editing.set(true);
+    this.message = '';
+    this.error = '';
+  }
+
+  cancelEdit(): void {
+    const original = this.originalContact();
+    if (original && original.id) {
+      this.selectedContact.set({ ...original });
+    } else {
+      this.selectedContact.set(this.newContactTemplate());
+    }
+    this.editing.set(false);
     this.message = '';
     this.error = '';
   }
@@ -60,6 +91,7 @@ export class ContactsComponent {
         this.message = 'Contact saved successfully.';
         this.updateLocalList(saved);
         this.selectContact(saved);
+        this.editing.set(false);
       },
       error: () => this.error = 'Unable to save contact.'
     });
