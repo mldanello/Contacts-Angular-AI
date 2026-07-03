@@ -20,9 +20,13 @@
             "tsConfig": "tsconfig.app.json",
             "assets": ["src/favicon.ico", "src/assets"],
             "styles": ["src/styles.css"],
-            "scripts": []
+            "scripts": [],
+            "sourceMap": true
           },
           "configurations": {
+            "development": {
+              "sourceMap": true
+            },
             "production": {
               "fileReplacements": [
                 {
@@ -51,7 +55,7 @@
             "main": "src/test.ts",
             "polyfills": [],
             "tsConfig": "tsconfig.spec.json",
-            "karmaConfig": "karma.conf.js"
+            "karmaConfig": "karma.conf.cjs"
           }
         }
       }

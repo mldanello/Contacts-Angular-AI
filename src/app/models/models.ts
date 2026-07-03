@@ -9,6 +9,8 @@ export interface Contact {
 }
 
 export interface AuthToken {
-  accessToken: string;
-  expiresIn: number;
+  accessToken?: string;
+  token?: string;
+  expiresIn?: number;
+  expires_at?: string;
 }

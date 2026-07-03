@@ -21,9 +21,15 @@ export class AuthService {
 
   async login(username: string, password: string): Promise<AuthToken> {
     const token = await this.api.authenticate(username, password);
-    this.saveToken(token);
-    this.tokenSignal.set(token);
-    return token;
+    const normalizedToken: AuthToken = {
+      accessToken: token.accessToken ?? token.token,
+      expiresIn: token.expiresIn,
+      expires_at: token.expires_at
+    };
+
+    this.saveToken(normalizedToken);
+    this.tokenSignal.set(normalizedToken);
+    return normalizedToken;
   }
 
   logout(): void {
