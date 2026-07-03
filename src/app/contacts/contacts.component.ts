@@ -44,9 +44,10 @@ export class ContactsComponent {
 
     try {
       const contacts = await this.api.listContacts();
-      this.contacts.set(contacts);
-      if (contacts.length > 0) {
-        await this.selectContact(contacts[0]);
+      const sortedContacts = this.sortContacts(contacts);
+      this.contacts.set(sortedContacts);
+      if (sortedContacts.length > 0) {
+        await this.selectContact(sortedContacts[0]);
       }
     } catch {
       this.error.set('Could not load contacts.');
@@ -172,11 +173,11 @@ export class ContactsComponent {
     this.contacts.update(list => {
       const index = list.findIndex(item => item.id === listItem.id);
       if (index === -1) {
-        return [...list, listItem];
+        return this.sortContacts([...list, listItem]);
       }
       const updated = [...list];
       updated[index] = listItem;
-      return updated;
+      return this.sortContacts(updated);
     });
   }
 
@@ -205,5 +206,16 @@ export class ContactsComponent {
       firstName: contact.firstName,
       lastName: contact.lastName
     };
+  }
+
+  private sortContacts(list: ContactList[]): ContactList[] {
+    return [...list].sort((a, b) => {
+      const lastNameComparison = a.lastName.localeCompare(b.lastName, undefined, { sensitivity: 'base' });
+      if (lastNameComparison !== 0) {
+        return lastNameComparison;
+      }
+
+      return a.firstName.localeCompare(b.firstName, undefined, { sensitivity: 'base' });
+    });
   }
 }
