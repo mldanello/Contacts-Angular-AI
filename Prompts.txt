@@ -12,3 +12,4 @@ notes: string use scrollable text area
 isActive: boolean readonly
 createdAt: datetime readonly
 modifiedAt: datetime readonly
+and put the models in separate typescript files

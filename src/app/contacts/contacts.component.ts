@@ -100,11 +100,30 @@ export class ContactsComponent {
 
   cancelEdit(): void {
     const original = this.originalContact();
+    const selectedId = this.selectedContactId();
+    const firstContact = this.contacts()[0];
+
     if (original && original.id > 0) {
       this.selectedContact.set({ ...original });
+    } else if (selectedId) {
+      const selectedListItem = this.contacts().find(contact => contact.id === selectedId);
+      if (selectedListItem) {
+        this.editing.set(false);
+        this.message.set('');
+        this.error.set('');
+        void this.selectContact(selectedListItem);
+        return;
+      }
+    } else if (firstContact) {
+      this.editing.set(false);
+      this.message.set('');
+      this.error.set('');
+      void this.selectContact(firstContact);
+      return;
     } else {
       this.selectedContact.set(this.newContactTemplate());
     }
+
     this.editing.set(false);
     this.message.set('');
     this.error.set('');
@@ -124,11 +143,19 @@ export class ContactsComponent {
 
     const contact = this.selectedContact();
     try {
-      const saved = contact.id > 0 ? await this.api.updateContact(contact) : await this.api.addContact(contact);
-      this.message.set('Contact saved successfully.');
-      this.updateLocalList(saved);
-      await this.selectContact(this.toListItem(saved));
-      this.editing.set(false);
+      if (contact.id > 0) {
+        await this.api.updateContact(contact);
+        this.message.set('Contact saved successfully.');
+        this.editing.set(false);
+        await this.selectContact(this.toListItem(contact));
+        this.updateLocalList(this.selectedContact());
+      } else {
+        const saved = await this.api.addContact(contact);
+        this.message.set('Contact saved successfully.');
+        this.updateLocalList(saved);
+        this.editing.set(false);
+        await this.selectContact(this.toListItem(saved));
+      }
     } catch {
       this.error.set('Unable to save contact.');
     } finally {
