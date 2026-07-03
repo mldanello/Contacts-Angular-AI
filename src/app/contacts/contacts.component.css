@@ -70,6 +70,15 @@
   border-color: #93c5fd;
 }
 
+.contact-name {
+  color: #0f172a;
+  font-weight: 600;
+}
+
+.contact-item:hover .contact-name {
+  color: #1d4ed8;
+}
+
 .contact-item button,
 .contact-actions button {
   border: none;
@@ -82,16 +91,6 @@
 .contact-item button:hover,
 .contact-actions button:hover {
   color: #1d4ed8;
-}
-
-.contact-link {
-  color: #1d4ed8;
-  text-decoration: none;
-  font-weight: 600;
-}
-
-.contact-link:hover {
-  text-decoration: underline;
 }
 
 .contact-actions {

@@ -5,13 +5,13 @@
           <h2>Contacts</h2>
         </div>
         <div class="contact-list">
-          <div *ngFor="let contact of contacts()" class="contact-item" [class.selected]="selectedContact().id === contact.id">
-            <a href="#" class="contact-link" (click)="selectContact(contact); $event.preventDefault()">
+          <div *ngFor="let contact of contacts()" class="contact-item" [class.selected]="selectedContact().id === contact.id" (click)="selectContact(contact)">
+            <span class="contact-name">
               {{ contact.firstName }} {{ contact.lastName }}
-            </a>
+            </span>
             <div class="contact-actions">
-              <button type="button" class="secondary" (click)="goToEditMode(contact)">Edit</button>
-              <button type="button" class="danger" (click)="confirmDelete(contact.id)">Delete</button>
+              <button type="button" class="secondary" (click)="$event.stopPropagation(); goToEditMode(contact)">Edit</button>
+              <button type="button" class="danger" (click)="$event.stopPropagation(); confirmDelete(contact.id)">Delete</button>
             </div>
           </div>
           <button class="primary new-contact-button" type="button" (click)="selectContact(newContactTemplate(), true)">+ New</button>
