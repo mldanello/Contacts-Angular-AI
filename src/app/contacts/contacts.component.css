@@ -102,6 +102,9 @@
 .contact-detail {
   display: grid;
   gap: 1rem;
+  position: sticky;
+  top: 1rem;
+  align-self: start;
 }
 
 .contact-view {
@@ -231,5 +234,9 @@ button:disabled {
 @media (max-width: 980px) {
   .contacts-layout {
     grid-template-columns: 1fr;
+  }
+
+  .contact-detail {
+    position: static;
   }
 }
