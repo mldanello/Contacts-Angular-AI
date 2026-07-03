@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { ApiService } from './api.service';
-import { AuthToken } from '../models';
+import { AuthToken } from '../models/models';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {

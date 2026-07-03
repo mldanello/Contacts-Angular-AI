@@ -2,9 +2,9 @@ import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ApiService } from '../core/api.service';
-import { AuthService } from '../core/auth.service';
-import { Contact } from '../models';
+import { ApiService } from '../services/api.service';
+import { AuthService } from '../services/auth.service';
+import { Contact } from '../models/models';
 
 @Component({
   standalone: true,

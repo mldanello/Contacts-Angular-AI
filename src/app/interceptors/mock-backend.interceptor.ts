@@ -9,7 +9,7 @@ import {
 } from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
 import { delay, mergeMap } from 'rxjs/operators';
-import { Contact, AuthToken } from '../models';
+import { Contact, AuthToken } from '../models/models';
 
 const mockContacts: Contact[] = [
   {
