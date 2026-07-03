@@ -2,6 +2,8 @@ import { Component, inject, signal } from '@angular/core';
 
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { DomSanitizer } from '@angular/platform-browser';
+import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
 import { ApiService } from '../services/api.service';
 import { AuthService } from '../services/auth.service';
 import { ContactList } from '../models/contact-list.model';
@@ -10,7 +12,7 @@ import { ContactDetail } from '../models/contact-detail.model';
 @Component({
   standalone: true,
   selector: 'app-contacts',
-  imports: [FormsModule],
+  imports: [FormsModule, MatIconModule],
   templateUrl: './contacts.component.html',
   styleUrls: ['./contacts.component.css']
 })
@@ -18,6 +20,8 @@ export class ContactsComponent {
   private router = inject(Router);
   private authService = inject(AuthService);
   private api = inject(ApiService);
+  private matIconRegistry = inject(MatIconRegistry);
+  private sanitizer = inject(DomSanitizer);
 
   message = signal('');
   error = signal('');
@@ -31,6 +35,8 @@ export class ContactsComponent {
   originalContact = signal<ContactDetail | null>(null);
 
   constructor() {
+    this.registerIcons();
+
     if (!this.authService.isAuthenticated()) {
       this.router.navigate(['/login']);
     } else {
@@ -244,5 +250,32 @@ export class ContactsComponent {
 
       return a.firstName.localeCompare(b.firstName, undefined, { sensitivity: 'base' });
     });
+  }
+
+  private registerIcons(): void {
+    this.matIconRegistry.addSvgIcon(
+      'contact-edit',
+      this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/pencil.svg')
+    );
+    this.matIconRegistry.addSvgIcon(
+      'contact-delete',
+      this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/trash.svg')
+    );
+    this.matIconRegistry.addSvgIcon(
+      'contact-cancel',
+      this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/cancel.svg')
+    );
+    this.matIconRegistry.addSvgIcon(
+      'contact-reset',
+      this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/reset.svg')
+    );
+    this.matIconRegistry.addSvgIcon(
+      'contact-new',
+      this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/plus.svg')
+    );
+    this.matIconRegistry.addSvgIcon(
+      'contact-save',
+      this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/save.svg')
+    );
   }
 }

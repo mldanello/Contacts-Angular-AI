@@ -88,6 +88,25 @@
   font-weight: 600;
 }
 
+.contact-actions .icon-button {
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: none;
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.contact-actions .icon-button.secondary {
+  color: #2563eb;
+}
+
+.contact-actions .icon-button.danger {
+  color: #ef4444;
+}
+
 .contact-item button:hover,
 .contact-actions button:hover {
   color: #1d4ed8;
@@ -197,6 +216,9 @@ button.primary {
   border-radius: 0.75rem;
   padding: 0.85rem 1.25rem;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
 }
 
 button.secondary {
@@ -206,6 +228,9 @@ button.secondary {
   border-radius: 0.75rem;
   padding: 0.85rem 1.25rem;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
 }
 
 button.danger {
@@ -215,6 +240,14 @@ button.danger {
   border-radius: 0.75rem;
   padding: 0.85rem 1.25rem;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+mat-icon {
+  width: 1rem;
+  height: 1rem;
 }
 
 button:disabled {
