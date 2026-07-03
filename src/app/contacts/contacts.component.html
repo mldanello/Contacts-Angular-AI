@@ -11,7 +11,7 @@
             </a>
             <div class="contact-actions">
               <button type="button" class="secondary" (click)="goToEditMode(contact)">Edit</button>
-              <button type="button" class="danger" (click)="removeContact(contact.id)">Delete</button>
+              <button type="button" class="danger" (click)="confirmDelete(contact.id)">Delete</button>
             </div>
           </div>
           <button class="primary new-contact-button" type="button" (click)="selectContact(newContactTemplate(), true)">+ New</button>
@@ -33,7 +33,7 @@
           </div>
           <div class="actions">
             <button class="primary" type="button" (click)="goToEditMode()">Edit</button>
-            <button class="danger" type="button" (click)="removeContact(selectedContact().id)">Delete</button>
+            <button class="danger" type="button" (click)="confirmDelete(selectedContact().id)">Delete</button>
           </div>
           <p *ngIf="message" class="info-message">{{ message }}</p>
           <p *ngIf="error" class="error-message">{{ error }}</p>

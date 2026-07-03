@@ -97,6 +97,15 @@ export class ContactsComponent {
     });
   }
 
+  confirmDelete(id: string): void {
+    const confirmed = window.confirm('Are you sure you want to delete this contact?');
+    if (!confirmed) {
+      return;
+    }
+
+    this.removeContact(id);
+  }
+
   removeContact(id: string): void {
     this.api.deleteContact(id).subscribe({
       next: () => {
