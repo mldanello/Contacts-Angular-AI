@@ -42,6 +42,12 @@ export class ContactsComponent {
 
   selectContact(contact: Contact): void {
     this.selectedContact.set({ ...contact });
+    this.message = '';
+    this.error = '';
+  }
+
+  setSelectedContactField<K extends keyof Contact>(field: K, value: Contact[K]): void {
+    this.selectedContact.update(contact => ({ ...contact, [field]: value }));
   }
 
   saveContact(): void {

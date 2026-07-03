@@ -19,32 +19,39 @@
       <div class="contact-detail">
         <h2>{{ selectedContact().id ? 'Edit Contact' : 'Add Contact' }}</h2>
         <form #contactForm="ngForm" (ngSubmit)="saveContact()">
-          <div class="input-group">
+          <div class="input-group" [class.invalid]="firstName.invalid && firstName.touched">
             <label for="firstName">First name</label>
-            <input id="firstName" name="firstName" [(ngModel)]="selectedContact().firstName" required />
+            <input id="firstName" name="firstName" #firstName="ngModel" [ngModel]="selectedContact().firstName" (ngModelChange)="setSelectedContactField('firstName', $event)" required />
+            <div class="field-error" *ngIf="firstName.invalid && firstName.touched">First name is required.</div>
           </div>
-          <div class="input-group">
+          <div class="input-group" [class.invalid]="lastName.invalid && lastName.touched">
             <label for="lastName">Last name</label>
-            <input id="lastName" name="lastName" [(ngModel)]="selectedContact().lastName" required />
+            <input id="lastName" name="lastName" #lastName="ngModel" [ngModel]="selectedContact().lastName" (ngModelChange)="setSelectedContactField('lastName', $event)" required />
+            <div class="field-error" *ngIf="lastName.invalid && lastName.touched">Last name is required.</div>
           </div>
-          <div class="input-group">
+          <div class="input-group" [class.invalid]="email.invalid && email.touched">
             <label for="email">Email</label>
-            <input id="email" name="email" type="email" [(ngModel)]="selectedContact().email" required />
+            <input id="email" name="email" #email="ngModel" type="email" [ngModel]="selectedContact().email" (ngModelChange)="setSelectedContactField('email', $event)" required />
+            <div class="field-error" *ngIf="email.invalid && email.touched">
+              <span *ngIf="email.errors?.required">Email is required.</span>
+              <span *ngIf="email.errors?.email">Enter a valid email address.</span>
+            </div>
           </div>
-          <div class="input-group">
+          <div class="input-group" [class.invalid]="phone.invalid && phone.touched">
             <label for="phone">Phone</label>
-            <input id="phone" name="phone" [(ngModel)]="selectedContact().phone" required />
+            <input id="phone" name="phone" #phone="ngModel" [ngModel]="selectedContact().phone" (ngModelChange)="setSelectedContactField('phone', $event)" required />
+            <div class="field-error" *ngIf="phone.invalid && phone.touched">Phone is required.</div>
           </div>
           <div class="input-group">
             <label for="company">Company</label>
-            <input id="company" name="company" [(ngModel)]="selectedContact().company" />
+            <input id="company" name="company" [ngModel]="selectedContact().company" (ngModelChange)="setSelectedContactField('company', $event)" />
           </div>
           <div class="input-group">
             <label for="notes">Notes</label>
-            <textarea id="notes" name="notes" rows="4" [(ngModel)]="selectedContact().notes"></textarea>
+            <textarea id="notes" name="notes" rows="4" [ngModel]="selectedContact().notes" (ngModelChange)="setSelectedContactField('notes', $event)"></textarea>
           </div>
           <div class="actions">
-            <button class="primary" type="submit">Save</button>
+            <button class="primary" type="submit" [disabled]="contactForm.invalid">Save</button>
             <button class="secondary" type="button" (click)="selectContact(newContactTemplate())">Reset</button>
             <button class="danger" type="button" *ngIf="selectedContact().id" (click)="removeContact(selectedContact().id)">Delete</button>
           </div>
