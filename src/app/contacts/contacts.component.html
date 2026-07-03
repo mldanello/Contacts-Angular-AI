@@ -35,8 +35,8 @@
             <button class="primary" type="button" (click)="goToEditMode()">Edit</button>
             <button class="danger" type="button" (click)="confirmDelete(selectedContact().id)">Delete</button>
           </div>
-          <p *ngIf="message" class="info-message">{{ message }}</p>
-          <p *ngIf="error" class="error-message">{{ error }}</p>
+          <p *ngIf="message()" class="info-message">{{ message() }}</p>
+          <p *ngIf="error()" class="error-message">{{ error() }}</p>
         </ng-container>
 
         <ng-template #editForm>
@@ -79,6 +79,6 @@
               <button class="danger" type="button" *ngIf="selectedContact().id" (click)="removeContact(selectedContact().id)">Delete</button>
             </div>
           </form>
-          <p *ngIf="message" class="info-message">{{ message }}</p>
-          <p *ngIf="error" class="error-message">{{ error }}</p>
+          <p *ngIf="message()" class="info-message">{{ message() }}</p>
+          <p *ngIf="error()" class="error-message">{{ error() }}</p>
         </ng-template>

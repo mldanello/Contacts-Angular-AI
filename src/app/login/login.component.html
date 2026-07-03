@@ -11,9 +11,9 @@
         <input id="password" name="password" type="password" [(ngModel)]="password" required />
       </div>
       <div class="actions">
-        <button class="primary" type="submit" [disabled]="loading">{{ loading ? 'Signing in…' : 'Sign in' }}</button>
+        <button class="primary" type="submit" [disabled]="loading()">{{ loading() ? 'Signing in…' : 'Sign in' }}</button>
       </div>
-      <p *ngIf="authError" class="error-message">{{ authError }}</p>
+      <p *ngIf="authError()" class="error-message">{{ authError() }}</p>
     </form>
   </div>
 </section>

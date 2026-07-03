@@ -14,7 +14,7 @@ export class AuthInterceptor implements HttpInterceptor {
   private authService = inject(AuthService);
 
   intercept(req: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    const token = this.authService.token?.accessToken;
+    const token = this.authService.tokenValue?.accessToken;
     if (!token || req.url.endsWith('/token')) {
       return next.handle(req);
     }

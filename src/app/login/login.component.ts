@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -14,8 +14,8 @@ import { AuthService } from '../services/auth.service';
 export class LoginComponent {
   username = '';
   password = '';
-  authError = '';
-  loading = false;
+  authError = signal('');
+  loading = signal(false);
 
   constructor(private authService: AuthService, private router: Router) {
     if (this.authService.isAuthenticated()) {
@@ -23,19 +23,17 @@ export class LoginComponent {
     }
   }
 
-  login(): void {
-    this.authError = '';
-    this.loading = true;
+  async login(): Promise<void> {
+    this.authError.set('');
+    this.loading.set(true);
 
-    this.authService.login(this.username, this.password).subscribe({
-      next: () => {
-        this.loading = false;
-        this.router.navigate(['/contacts']);
-      },
-      error: () => {
-        this.loading = false;
-        this.authError = 'Unable to sign in. Please check your username and password.';
-      }
-    });
+    try {
+      await this.authService.login(this.username, this.password);
+      this.router.navigate(['/contacts']);
+    } catch {
+      this.authError.set('Unable to sign in. Please check your username and password.');
+    } finally {
+      this.loading.set(false);
+    }
   }
 }

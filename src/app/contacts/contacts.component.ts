@@ -18,8 +18,9 @@ export class ContactsComponent {
   private authService = inject(AuthService);
   private api = inject(ApiService);
 
-  message = '';
-  error = '';
+  message = signal('');
+  error = signal('');
+  loading = signal(false);
 
   contacts = signal<Contact[]>([]);
   selectedContact = signal<Contact>(this.newContactTemplate());
@@ -34,18 +35,24 @@ export class ContactsComponent {
     }
   }
 
-  loadContacts(): void {
-    this.error = '';
-    this.api.listContacts().subscribe({
-      next: contacts => this.contacts.set(contacts),
-      error: () => this.error = 'Could not load contacts.'
-    });
+  async loadContacts(): Promise<void> {
+    this.loading.set(true);
+    this.error.set('');
+
+    try {
+      const contacts = await this.api.listContacts();
+      this.contacts.set(contacts);
+    } catch {
+      this.error.set('Could not load contacts.');
+    } finally {
+      this.loading.set(false);
+    }
   }
 
   selectContact(contact: Contact, edit = false): void {
     this.selectedContact.set({ ...contact });
-    this.message = '';
-    this.error = '';
+    this.message.set('');
+    this.error.set('');
 
     if (contact.id) {
       this.originalContact.set({ ...contact });
@@ -61,8 +68,8 @@ export class ContactsComponent {
     this.selectedContact.set(selected);
     this.originalContact.set({ ...selected });
     this.editing.set(true);
-    this.message = '';
-    this.error = '';
+    this.message.set('');
+    this.error.set('');
   }
 
   cancelEdit(): void {
@@ -73,28 +80,31 @@ export class ContactsComponent {
       this.selectedContact.set(this.newContactTemplate());
     }
     this.editing.set(false);
-    this.message = '';
-    this.error = '';
+    this.message.set('');
+    this.error.set('');
   }
 
   setSelectedContactField<K extends keyof Contact>(field: K, value: Contact[K]): void {
     this.selectedContact.update(contact => ({ ...contact, [field]: value }));
   }
 
-  saveContact(): void {
-    this.error = '';
-    this.message = '';
+  async saveContact(): Promise<void> {
+    this.error.set('');
+    this.message.set('');
+    this.loading.set(true);
+
     const contact = this.selectedContact();
-    const request = contact.id ? this.api.updateContact(contact) : this.api.addContact(contact);
-    request.subscribe({
-      next: saved => {
-        this.message = 'Contact saved successfully.';
-        this.updateLocalList(saved);
-        this.selectContact(saved);
-        this.editing.set(false);
-      },
-      error: () => this.error = 'Unable to save contact.'
-    });
+    try {
+      const saved = contact.id ? await this.api.updateContact(contact) : await this.api.addContact(contact);
+      this.message.set('Contact saved successfully.');
+      this.updateLocalList(saved);
+      this.selectContact(saved);
+      this.editing.set(false);
+    } catch {
+      this.error.set('Unable to save contact.');
+    } finally {
+      this.loading.set(false);
+    }
   }
 
   confirmDelete(id: string): void {
@@ -106,17 +116,22 @@ export class ContactsComponent {
     this.removeContact(id);
   }
 
-  removeContact(id: string): void {
-    this.api.deleteContact(id).subscribe({
-      next: () => {
-        this.contacts.update(list => list.filter(contact => contact.id !== id));
-        this.message = 'Contact removed.';
-        if (this.selectedContact()?.id === id) {
-          this.selectContact(this.newContactTemplate());
-        }
-      },
-      error: () => this.error = 'Unable to delete contact.'
-    });
+  async removeContact(id: string): Promise<void> {
+    this.loading.set(true);
+    this.error.set('');
+
+    try {
+      await this.api.deleteContact(id);
+      this.contacts.update(list => list.filter(contact => contact.id !== id));
+      this.message.set('Contact removed.');
+      if (this.selectedContact()?.id === id) {
+        this.selectContact(this.newContactTemplate());
+      }
+    } catch {
+      this.error.set('Unable to delete contact.');
+    } finally {
+      this.loading.set(false);
+    }
   }
 
   updateLocalList(contact: Contact): void {
