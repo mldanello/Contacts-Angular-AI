@@ -1,6 +1,7 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { ApiService } from '../core/api.service';
 import { AuthService } from '../core/auth.service';
 import { Contact } from '../models';
@@ -13,27 +14,22 @@ import { Contact } from '../models';
   styleUrls: ['./contacts.component.css']
 })
 export class ContactsComponent {
-  username = '';
-  password = '';
-  authError = '';
+  private router = inject(Router);
+  private authService = inject(AuthService);
+  private api = inject(ApiService);
+
   message = '';
   error = '';
 
   contacts = signal<Contact[]>([]);
   selectedContact = signal<Contact>(this.newContactTemplate());
 
-  constructor(public authService: AuthService, private api: ApiService) {
-    if (this.authService.isAuthenticated()) {
+  constructor() {
+    if (!this.authService.isAuthenticated()) {
+      this.router.navigate(['/login']);
+    } else {
       this.loadContacts();
     }
-  }
-
-  login(): void {
-    this.authError = '';
-    this.authService.login(this.username, this.password).subscribe({
-      next: () => this.loadContacts(),
-      error: () => this.authError = 'Unable to sign in. Please check your credentials.'
-    });
   }
 
   loadContacts(): void {

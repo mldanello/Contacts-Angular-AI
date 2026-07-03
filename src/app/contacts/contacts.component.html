@@ -1,25 +1,6 @@
 <section class="page-card">
-  <div *ngIf="!authService.isAuthenticated(); else contactsApp" class="info-message">
-    <h2>Sign in to manage contacts</h2>
-    <form (ngSubmit)="login()">
-      <div class="input-group">
-        <label for="username">User name</label>
-        <input id="username" name="username" [(ngModel)]="username" required />
-      </div>
-      <div class="input-group">
-        <label for="password">Password</label>
-        <input id="password" name="password" type="password" [(ngModel)]="password" required />
-      </div>
-      <div class="actions">
-        <button class="primary" type="submit">Sign in</button>
-      </div>
-      <p *ngIf="authError" class="error-message">{{ authError }}</p>
-    </form>
-  </div>
-
-  <ng-template #contactsApp>
-    <div class="contacts-layout">
-      <div>
+  <div class="contacts-layout">
+    <div>
         <div class="actions" style="justify-content: space-between;">
           <h2>Contacts</h2>
           <button class="primary" type="button" (click)="selectContact(newContactTemplate())">New</button>
@@ -72,5 +53,4 @@
         <p *ngIf="error" class="error-message">{{ error }}</p>
       </div>
     </div>
-  </ng-template>
 </section>
