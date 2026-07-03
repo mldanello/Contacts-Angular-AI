@@ -164,6 +164,13 @@
   background: #ffffff;
 }
 
+.input-group textarea {
+  min-height: 8rem;
+  max-height: 12rem;
+  overflow-y: auto;
+  resize: vertical;
+}
+
 .input-group input.ng-invalid.ng-touched,
 .input-group textarea.ng-invalid.ng-touched {
   border-color: #dc2626;

@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
-import { Contact, AuthToken } from '../models/models';
+import { AuthToken } from '../models/auth-token.model';
+import { ContactList } from '../models/contact-list.model';
+import { ContactDetail } from '../models/contact-detail.model';
 
 import { environment } from '../../environments/environment';
 
@@ -23,23 +25,23 @@ export class ApiService {
     return firstValueFrom(this.http.post<AuthToken>(this.tokenUrl, { username, password }));
   }
 
-  async listContacts(): Promise<Contact[]> {
-    return firstValueFrom(this.http.get<Contact[]>(this.contactsUrl));
+  async listContacts(): Promise<ContactList[]> {
+    return firstValueFrom(this.http.get<ContactList[]>(this.contactsUrl));
   }
 
-  async getContact(id: string): Promise<Contact> {
-    return firstValueFrom(this.http.get<Contact>(`${this.contactsUrl}/${id}`));
+  async getContact(id: number): Promise<ContactDetail> {
+    return firstValueFrom(this.http.get<ContactDetail>(`${this.contactsUrl}/${id}`));
   }
 
-  async addContact(contact: Contact): Promise<Contact> {
-    return firstValueFrom(this.http.post<Contact>(this.contactsUrl, contact));
+  async addContact(contact: ContactDetail): Promise<ContactDetail> {
+    return firstValueFrom(this.http.post<ContactDetail>(this.contactsUrl, contact));
   }
 
-  async updateContact(contact: Contact): Promise<Contact> {
-    return firstValueFrom(this.http.put<Contact>(`${this.contactsUrl}/${contact.id}`, contact));
+  async updateContact(contact: ContactDetail): Promise<ContactDetail> {
+    return firstValueFrom(this.http.put<ContactDetail>(`${this.contactsUrl}/${contact.id}`, contact));
   }
 
-  async deleteContact(id: string): Promise<void> {
+  async deleteContact(id: number): Promise<void> {
     return firstValueFrom(this.http.delete<void>(`${this.contactsUrl}/${id}`));
   }
 }
