@@ -56,4 +56,10 @@ export class LoginComponent {
       this.loading.set(false);
     }
   }
+
+  async demoLogin(): Promise<void> {
+    this.username = 'testuser';
+    this.password = 'P@ssw0rd';
+    await this.login();
+  }
 }
