@@ -46,7 +46,7 @@
       } @else if (!loadingDetail()) {
         <form #contactForm="ngForm" (ngSubmit)="saveContact()">
           <div class="input-group">
-            <label for="id">Id (readonly)</label>
+            <label for="id">Id</label>
             <input id="id" name="id" [ngModel]="selectedContact().id" readonly />
           </div>
 
@@ -92,17 +92,17 @@
           </div>
 
           <div class="input-group">
-            <label for="isActive">Is active (readonly)</label>
+            <label for="isActive">Is active</label>
             <input id="isActive" name="isActive" [ngModel]="selectedContact().isActive ? 'Yes' : 'No'" readonly />
           </div>
 
           <div class="input-group">
-            <label for="createdAt">Created at (readonly)</label>
+            <label for="createdAt">Created at</label>
             <input id="createdAt" name="createdAt" [ngModel]="selectedContact().createdAt" readonly />
           </div>
 
           <div class="input-group">
-            <label for="modifiedAt">Modified at (readonly)</label>
+            <label for="modifiedAt">Modified at</label>
             <input id="modifiedAt" name="modifiedAt" [ngModel]="selectedContact().modifiedAt" readonly />
           </div>
 
