@@ -36,19 +36,23 @@ export class AuthService {
   }
 
   logout(): void {
+    sessionStorage.removeItem(this.tokenKey);
     localStorage.removeItem(this.tokenKey);
     this.tokenSignal.set(null);
     this.debugLog('logout');
   }
 
   private loadToken(): AuthToken | null {
-    const raw = localStorage.getItem(this.tokenKey);
+    const raw = sessionStorage.getItem(this.tokenKey) ?? localStorage.getItem(this.tokenKey);
     if (!raw) {
       return null;
     }
 
     try {
       const token = this.normalizeToken(JSON.parse(raw) as AuthToken);
+      // Keep authentication scoped to the current browser session.
+      sessionStorage.setItem(this.tokenKey, JSON.stringify(token));
+      localStorage.removeItem(this.tokenKey);
       this.debugLog('loadToken:success', { hasAccessToken: !!token.accessToken });
       return token;
     } catch {
@@ -58,7 +62,8 @@ export class AuthService {
   }
 
   private saveToken(token: AuthToken): void {
-    localStorage.setItem(this.tokenKey, JSON.stringify(token));
+    sessionStorage.setItem(this.tokenKey, JSON.stringify(token));
+    localStorage.removeItem(this.tokenKey);
   }
 
   private normalizeToken(token: AuthToken): AuthToken {
