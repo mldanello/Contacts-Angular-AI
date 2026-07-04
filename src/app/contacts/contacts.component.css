@@ -58,11 +58,14 @@
   cursor: pointer;
   font-weight: 600;
   margin-top: 0.5rem;
-  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.15);
+  box-shadow: 0 10px 22px rgba(37, 99, 235, 0.32), 0 1px 0 rgba(255, 255, 255, 0.2) inset;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
 }
 
 .new-contact-button:hover {
   background: #1d4ed8;
+  box-shadow: 0 14px 28px rgba(29, 78, 216, 0.38), 0 1px 0 rgba(255, 255, 255, 0.2) inset;
+  transform: translateY(-1px);
 }
 
 .contact-item.selected {
@@ -91,12 +94,15 @@
 .contact-actions .icon-button {
   width: 2rem;
   height: 2rem;
-  padding: 0;
+  padding: 0.25rem;
   border: none;
-  background: transparent;
+  background: #ffffff;
+  border-radius: 999px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 6px 14px rgba(15, 23, 42, 0.2);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
 }
 
 .contact-actions .icon-button.secondary {
@@ -110,6 +116,11 @@
 .contact-item button:hover,
 .contact-actions button:hover {
   color: #1d4ed8;
+}
+
+.contact-actions .icon-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 20px rgba(15, 23, 42, 0.24);
 }
 
 .contact-actions {
@@ -219,6 +230,8 @@ button.primary {
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
+  box-shadow: 0 10px 22px rgba(37, 99, 235, 0.34), 0 1px 0 rgba(255, 255, 255, 0.18) inset;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
 }
 
 button.secondary {
@@ -231,6 +244,8 @@ button.secondary {
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.18), 0 1px 0 rgba(255, 255, 255, 0.8) inset;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
 }
 
 button.danger {
@@ -243,6 +258,15 @@ button.danger {
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
+  box-shadow: 0 10px 22px rgba(239, 68, 68, 0.34), 0 1px 0 rgba(255, 255, 255, 0.18) inset;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+button.primary:hover,
+button.secondary:hover,
+button.danger:hover {
+  box-shadow: 0 14px 28px rgba(15, 23, 42, 0.28);
+  transform: translateY(-1px);
 }
 
 mat-icon {
