@@ -1,0 +1,110 @@
+name: Deploy Angular UI to Azure App Service
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      target:
+        description: Deployment target
+        required: true
+        default: production
+        type: choice
+        options:
+          - staging
+          - production
+      webapp_name:
+        description: Optional App Service name override
+        required: false
+        type: string
+      resource_group:
+        description: Optional Resource Group override
+        required: false
+        type: string
+
+env:
+  AZURE_WEBAPP_NAME_PRODUCTION: mdmanagementstudio-ng-gui
+  AZURE_RESOURCE_GROUP_PRODUCTION: MD-ManagementStudio-2
+  AZURE_WEBAPP_NAME_STAGING: mdmanagementstudio-ng-gui-staging
+  AZURE_RESOURCE_GROUP_STAGING: MD-ManagementStudio-2
+  NODE_VERSION: '22'
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build production bundle
+        run: npm run build:prod
+
+      - name: Create deployment package
+        run: |
+          cd dist/angular-ai-contacts/browser
+          zip -r ../../../angular-ui-posix.zip .
+
+      - name: Azure login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Resolve deployment target
+        shell: bash
+        run: |
+          if [[ "${{ github.event_name }}" == "push" ]]; then
+            target="production"
+          else
+            target="${{ inputs.target }}"
+          fi
+
+          if [[ "$target" == "staging" ]]; then
+            webapp="${{ env.AZURE_WEBAPP_NAME_STAGING }}"
+            rg="${{ env.AZURE_RESOURCE_GROUP_STAGING }}"
+          else
+            webapp="${{ env.AZURE_WEBAPP_NAME_PRODUCTION }}"
+            rg="${{ env.AZURE_RESOURCE_GROUP_PRODUCTION }}"
+          fi
+
+          if [[ -n "${{ inputs.webapp_name }}" ]]; then
+            webapp="${{ inputs.webapp_name }}"
+          fi
+
+          if [[ -n "${{ inputs.resource_group }}" ]]; then
+            rg="${{ inputs.resource_group }}"
+          fi
+
+          echo "TARGET_ENV=$target" >> "$GITHUB_ENV"
+          echo "DEPLOY_WEBAPP_NAME=$webapp" >> "$GITHUB_ENV"
+          echo "DEPLOY_RESOURCE_GROUP=$rg" >> "$GITHUB_ENV"
+
+          echo "Resolved target: $target"
+          echo "Resolved app: $webapp"
+          echo "Resolved resource group: $rg"
+
+      - name: Deploy zip to App Service
+        run: |
+          az webapp deploy \
+            --resource-group "${{ env.DEPLOY_RESOURCE_GROUP }}" \
+            --name "${{ env.DEPLOY_WEBAPP_NAME }}" \
+            --src-path "angular-ui-posix.zip" \
+            --type zip \
+            --clean true
+
+      - name: Configure SPA startup command
+        run: |
+          az webapp config set \
+            --resource-group "${{ env.DEPLOY_RESOURCE_GROUP }}" \
+            --name "${{ env.DEPLOY_WEBAPP_NAME }}" \
+            --startup-file "pm2 serve /home/site/wwwroot --spa --no-daemon"

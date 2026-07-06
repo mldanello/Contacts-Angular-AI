@@ -7,6 +7,10 @@
 .contact-list {
   display: grid;
   gap: 1rem;
+  max-height: 48rem;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+  position: relative;
 }
 
 .contact-item {
@@ -17,9 +21,69 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
 }
 
-.contact-item button {
+.new-contact-button {
+  width: 9rem;
+  min-height: 2.5rem;
+  align-self: center;
+  justify-self: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 0.75rem;
+  border: none;
+  background: #2563eb;
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+  margin-top: 0.5rem;
+}
+
+.new-contact-button {
+  width: 9rem;
+  min-height: 2.5rem;
+  align-self: center;
+  justify-self: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 0.75rem;
+  border: none;
+  background: #2563eb;
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+  margin-top: 0.5rem;
+  box-shadow: 0 10px 22px rgba(37, 99, 235, 0.32), 0 1px 0 rgba(255, 255, 255, 0.2) inset;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.new-contact-button:hover {
+  background: #1d4ed8;
+  box-shadow: 0 14px 28px rgba(29, 78, 216, 0.38), 0 1px 0 rgba(255, 255, 255, 0.2) inset;
+  transform: translateY(-1px);
+}
+
+.contact-item.selected {
+  background: #eff6ff;
+  border-color: #93c5fd;
+}
+
+.contact-name {
+  color: #0f172a;
+  font-weight: 600;
+}
+
+.contact-item:hover .contact-name {
+  color: #1d4ed8;
+}
+
+.contact-item button,
+.contact-actions button {
   border: none;
   background: transparent;
   color: #2563eb;
@@ -27,13 +91,79 @@
   font-weight: 600;
 }
 
-.contact-item button:hover {
+.contact-actions .icon-button {
+  width: 2rem;
+  height: 2rem;
+  padding: 0.25rem;
+  border: none;
+  background: #ffffff;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 14px rgba(15, 23, 42, 0.2);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.contact-actions .icon-button.secondary {
+  color: #2563eb;
+}
+
+.contact-actions .icon-button.danger {
+  color: #ef4444;
+}
+
+.contact-item button:hover,
+.contact-actions button:hover {
   color: #1d4ed8;
+}
+
+.contact-actions .icon-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 20px rgba(15, 23, 42, 0.24);
+}
+
+.contact-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
 }
 
 .contact-detail {
   display: grid;
   gap: 1rem;
+  position: sticky;
+  top: 1rem;
+  align-self: start;
+}
+
+.contact-view {
+  display: grid;
+  gap: 0.75rem;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 1rem;
+  padding: 1rem;
+}
+
+.detail-row {
+  display: grid;
+  grid-template-columns: 9rem 1fr;
+  gap: 0.75rem;
+  align-items: start;
+}
+
+.detail-label {
+  font-weight: 600;
+  color: #475569;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.detail-label::after {
+  content: ':';
+  margin-left: 0.25rem;
+  color: #64748b;
 }
 
 .contact-detail form {
@@ -51,6 +181,10 @@
   color: #334155;
 }
 
+.input-group.invalid label {
+  color: #991b1b;
+}
+
 .input-group input,
 .input-group textarea {
   width: 100%;
@@ -58,6 +192,26 @@
   border: 1px solid #cbd5e1;
   padding: 0.9rem 1rem;
   background: #ffffff;
+}
+
+.input-group input[readonly],
+.input-group textarea[readonly] {
+  background: #f5f5f5;
+  border-color: #cbd5e1;
+  user-select: none;
+}
+
+.input-group textarea {
+  min-height: 8rem;
+  max-height: 12rem;
+  overflow-y: auto;
+  resize: vertical;
+}
+
+.input-group input.ng-invalid.ng-touched,
+.input-group textarea.ng-invalid.ng-touched {
+  border-color: #dc2626;
+  box-shadow: 0 0 0 1px rgba(220, 38, 38, 0.25);
 }
 
 .actions {
@@ -73,6 +227,11 @@ button.primary {
   border-radius: 0.75rem;
   padding: 0.85rem 1.25rem;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  box-shadow: 0 10px 22px rgba(37, 99, 235, 0.34), 0 1px 0 rgba(255, 255, 255, 0.18) inset;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
 }
 
 button.secondary {
@@ -82,6 +241,11 @@ button.secondary {
   border-radius: 0.75rem;
   padding: 0.85rem 1.25rem;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.18), 0 1px 0 rgba(255, 255, 255, 0.8) inset;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
 }
 
 button.danger {
@@ -91,11 +255,35 @@ button.danger {
   border-radius: 0.75rem;
   padding: 0.85rem 1.25rem;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  box-shadow: 0 10px 22px rgba(239, 68, 68, 0.34), 0 1px 0 rgba(255, 255, 255, 0.18) inset;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+button.primary:hover,
+button.secondary:hover,
+button.danger:hover {
+  box-shadow: 0 14px 28px rgba(15, 23, 42, 0.28);
+  transform: translateY(-1px);
+}
+
+mat-icon {
+  width: 1rem;
+  height: 1rem;
 }
 
 button:disabled {
   opacity: 0.55;
   cursor: not-allowed;
+}
+
+.field-error {
+  color: #b91c1c;
+  font-size: 0.875rem;
+  line-height: 1.3;
+  margin-top: 0.25rem;
 }
 
 .error-message,
@@ -117,5 +305,9 @@ button:disabled {
 @media (max-width: 980px) {
   .contacts-layout {
     grid-template-columns: 1fr;
+  }
+
+  .contact-detail {
+    position: static;
   }
 }

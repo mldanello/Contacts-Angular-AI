@@ -1,76 +1,153 @@
 <section class="page-card">
-  <div *ngIf="!authService.isAuthenticated(); else contactsApp" class="info-message">
-    <h2>Sign in to manage contacts</h2>
-    <form (ngSubmit)="login()">
-      <div class="input-group">
-        <label for="username">User name</label>
-        <input id="username" name="username" [(ngModel)]="username" required />
+  <div class="contacts-layout">
+    <div>
+      <div class="actions" style="justify-content: space-between;">
+        <h2>Contacts</h2>
       </div>
-      <div class="input-group">
-        <label for="password">Password</label>
-        <input id="password" name="password" type="password" [(ngModel)]="password" required />
-      </div>
-      <div class="actions">
-        <button class="primary" type="submit">Sign in</button>
-      </div>
-      <p *ngIf="authError" class="error-message">{{ authError }}</p>
-    </form>
-  </div>
-
-  <ng-template #contactsApp>
-    <div class="contacts-layout">
-      <div>
-        <div class="actions" style="justify-content: space-between;">
-          <h2>Contacts</h2>
-          <button class="primary" type="button" (click)="selectContact(newContactTemplate())">New</button>
-        </div>
-        <div class="contact-list">
-          <div *ngFor="let contact of contacts()" class="contact-item">
-            <span>{{ contact.firstName }} {{ contact.lastName }}</span>
-            <div>
-              <button type="button" (click)="selectContact(contact)">Edit</button>
-              <button type="button" class="secondary" (click)="removeContact(contact.id)">Delete</button>
+      <div class="contact-list">
+        @for (contact of contacts(); track contact.id) {
+          <div class="contact-item" [class.selected]="selectedContactId() === contact.id" (click)="selectContact(contact)">
+            <span class="contact-name">{{ contact.firstName }} {{ contact.lastName }}</span>
+            <div class="contact-actions">
+              <button type="button" class="secondary icon-button" (click)="$event.stopPropagation(); selectContact(contact, true)" aria-label="Edit contact" title="Edit">
+                <mat-icon svgIcon="contact-edit"></mat-icon>
+              </button>
+              <button type="button" class="danger icon-button" (click)="$event.stopPropagation(); confirmDelete(contact.id)" aria-label="Delete contact" title="Delete">
+                <mat-icon svgIcon="contact-delete"></mat-icon>
+              </button>
             </div>
           </div>
-        </div>
-      </div>
-
-      <div class="contact-detail">
-        <h2>{{ selectedContact().id ? 'Edit Contact' : 'Add Contact' }}</h2>
-        <form #contactForm="ngForm" (ngSubmit)="saveContact()">
-          <div class="input-group">
-            <label for="firstName">First name</label>
-            <input id="firstName" name="firstName" [(ngModel)]="selectedContact().firstName" required />
-          </div>
-          <div class="input-group">
-            <label for="lastName">Last name</label>
-            <input id="lastName" name="lastName" [(ngModel)]="selectedContact().lastName" required />
-          </div>
-          <div class="input-group">
-            <label for="email">Email</label>
-            <input id="email" name="email" type="email" [(ngModel)]="selectedContact().email" required />
-          </div>
-          <div class="input-group">
-            <label for="phone">Phone</label>
-            <input id="phone" name="phone" [(ngModel)]="selectedContact().phone" required />
-          </div>
-          <div class="input-group">
-            <label for="company">Company</label>
-            <input id="company" name="company" [(ngModel)]="selectedContact().company" />
-          </div>
-          <div class="input-group">
-            <label for="notes">Notes</label>
-            <textarea id="notes" name="notes" rows="4" [(ngModel)]="selectedContact().notes"></textarea>
-          </div>
-          <div class="actions">
-            <button class="primary" type="submit">Save</button>
-            <button class="secondary" type="button" (click)="selectContact(newContactTemplate())">Reset</button>
-            <button class="danger" type="button" *ngIf="selectedContact().id" (click)="removeContact(selectedContact().id)">Delete</button>
-          </div>
-        </form>
-        <p *ngIf="message" class="info-message">{{ message }}</p>
-        <p *ngIf="error" class="error-message">{{ error }}</p>
+        }
+        <button class="primary new-contact-button" type="button" (click)="createNewContact()">
+          <mat-icon svgIcon="contact-new"></mat-icon>
+          New
+        </button>
       </div>
     </div>
-  </ng-template>
+
+    <div class="contact-detail">
+      <h2>{{ selectedContact().id > 0 ? (editing() ? 'Edit Contact' : 'Contact Details') : 'Add Contact' }}</h2>
+
+      @if (loadingDetail()) {
+        <p class="info-message">Loading contact details...</p>
+      }
+
+      @if (!loadingDetail() && selectedContact().id > 0 && !editing()) {
+        <div class="contact-view">
+          <div class="detail-row"><span class="detail-label">Id</span><span>{{ selectedContact().id }}</span></div>
+          <div class="detail-row"><span class="detail-label">First name</span><span>{{ selectedContact().firstName }}</span></div>
+          <div class="detail-row"><span class="detail-label">Middle name</span><span>{{ selectedContact().middleName }}</span></div>
+          <div class="detail-row"><span class="detail-label">Last name</span><span>{{ selectedContact().lastName }}</span></div>
+          <div class="detail-row"><span class="detail-label">Company name</span><span>{{ selectedContact().companyName }}</span></div>
+          <div class="detail-row"><span class="detail-label">Email</span><span>{{ selectedContact().email }}</span></div>
+          <div class="detail-row"><span class="detail-label">Web</span><span>{{ selectedContact().web }}</span></div>
+          <div class="detail-row"><span class="detail-label">Notes</span><span>{{ selectedContact().notes }}</span></div>
+          <div class="detail-row"><span class="detail-label">Is active</span><span>{{ selectedContact().isActive ? 'Yes' : 'No' }}</span></div>
+          <div class="detail-row"><span class="detail-label">Created at</span><span>{{ selectedContact().createdAt }}</span></div>
+          <div class="detail-row"><span class="detail-label">Modified at</span><span>{{ selectedContact().modifiedAt }}</span></div>
+        </div>
+        <div class="actions">
+          <button class="primary" type="button" (click)="goToEditMode()">
+            <mat-icon svgIcon="contact-edit"></mat-icon>
+            edit
+          </button>
+          <button class="danger" type="button" (click)="confirmDelete(selectedContact().id)">
+            <mat-icon svgIcon="contact-delete"></mat-icon>
+            Delete
+          </button>
+        </div>
+      } @else if (!loadingDetail()) {
+        <form #contactForm="ngForm" (ngSubmit)="saveContact()">
+          <div class="input-group">
+            <label for="id">Id</label>
+            <input id="id" name="id" [ngModel]="selectedContact().id" readonly tabindex="-1" />
+          </div>
+
+          <div class="input-group">
+            <label for="firstName">First name</label>
+            <input id="firstName" name="firstName" #firstName="ngModel" [ngModel]="selectedContact().firstName" (ngModelChange)="setSelectedContactField('firstName', $event)" />
+          </div>
+
+          <div class="input-group">
+            <label for="middleName">Middle name</label>
+            <input id="middleName" name="middleName" [ngModel]="selectedContact().middleName" (ngModelChange)="setSelectedContactField('middleName', $event)" />
+          </div>
+
+          <div class="input-group" [class.invalid]="lastName.invalid && lastName.touched">
+            <label for="lastName">Last name</label>
+            <input id="lastName" name="lastName" #lastName="ngModel" [ngModel]="selectedContact().lastName" (ngModelChange)="setSelectedContactField('lastName', $event)" required />
+            @if (lastName.invalid && lastName.touched) {
+              <div class="field-error">Last name is required.</div>
+            }
+          </div>
+
+          <div class="input-group">
+            <label for="companyName">Company name</label>
+            <input id="companyName" name="companyName" [ngModel]="selectedContact().companyName" (ngModelChange)="setSelectedContactField('companyName', $event)" />
+          </div>
+
+          <div class="input-group" [class.invalid]="email.invalid && email.touched">
+            <label for="email">Email</label>
+            <input id="email" name="email" #email="ngModel" type="email" [ngModel]="selectedContact().email" (ngModelChange)="setSelectedContactField('email', $event)" />
+            @if (email.invalid && email.touched) {
+              <div class="field-error">Enter a valid email address.</div>
+            }
+          </div>
+
+          <div class="input-group">
+            <label for="web">Web</label>
+            <input id="web" name="web" [ngModel]="selectedContact().web" (ngModelChange)="setSelectedContactField('web', $event)" />
+          </div>
+
+          <div class="input-group">
+            <label for="notes">Notes</label>
+            <textarea id="notes" name="notes" rows="6" [ngModel]="selectedContact().notes" (ngModelChange)="setSelectedContactField('notes', $event)"></textarea>
+          </div>
+
+          <div class="input-group">
+            <label for="isActive">Is active</label>
+            <input id="isActive" name="isActive" [ngModel]="selectedContact().isActive ? 'Yes' : 'No'" readonly tabindex="-1" />
+          </div>
+
+          <div class="input-group">
+            <label for="createdAt">Created at</label>
+            <input id="createdAt" name="createdAt" [ngModel]="selectedContact().createdAt" readonly tabindex="-1" />
+          </div>
+
+          <div class="input-group">
+            <label for="modifiedAt">Modified at</label>
+            <input id="modifiedAt" name="modifiedAt" [ngModel]="selectedContact().modifiedAt" readonly tabindex="-1" />
+          </div>
+
+          <div class="actions">
+            <button class="primary" type="submit" [disabled]="contactForm.invalid">
+              <mat-icon svgIcon="contact-save"></mat-icon>
+              Save
+            </button>
+            <button class="secondary" type="button" (click)="cancelEdit()">
+              <mat-icon svgIcon="contact-cancel"></mat-icon>
+              Cancel
+            </button>
+            <button class="secondary" type="button" (click)="createNewContact()">
+              <mat-icon svgIcon="contact-reset"></mat-icon>
+              Reset
+            </button>
+            @if (selectedContact().id > 0) {
+              <button class="danger" type="button" (click)="removeContact(selectedContact().id)">
+                <mat-icon svgIcon="contact-delete"></mat-icon>
+                Delete
+              </button>
+            }
+          </div>
+        </form>
+      }
+
+      @if (message()) {
+        <p class="info-message">{{ message() }}</p>
+      }
+      @if (error()) {
+        <p class="error-message">{{ error() }}</p>
+      }
+    </div>
+  </div>
 </section>

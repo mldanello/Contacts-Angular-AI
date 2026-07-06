@@ -7,15 +7,15 @@ import {
   HTTP_INTERCEPTORS
 } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { AuthService } from './auth.service';
+import { AuthService } from '../services/auth.service';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
   private authService = inject(AuthService);
 
   intercept(req: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    const token = this.authService.token?.accessToken;
-    if (!token) {
+    const token = this.authService.tokenValue?.accessToken ?? this.authService.tokenValue?.token;
+    if (!token || req.url.endsWith('/token')) {
       return next.handle(req);
     }
 

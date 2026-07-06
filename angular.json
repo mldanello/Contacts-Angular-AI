@@ -9,20 +9,24 @@
       "root": "",
       "sourceRoot": "src",
       "prefix": "app",
-      "architect": {
+      "targets": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "builder": "@angular/build:application",
           "options": {
             "outputPath": "dist/angular-ai-contacts",
+            "browser": "src/main.ts",
             "index": "src/index.html",
-            "main": "src/main.ts",
             "polyfills": [],
             "tsConfig": "tsconfig.app.json",
             "assets": ["src/favicon.ico", "src/assets"],
             "styles": ["src/styles.css"],
-            "scripts": []
+            "scripts": [],
+            "sourceMap": true
           },
           "configurations": {
+            "development": {
+              "sourceMap": true
+            },
             "production": {
               "fileReplacements": [
                 {
@@ -33,29 +37,27 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "extractLicenses": true
             }
           }
         },
         "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
+          "builder": "@angular/build:dev-server",
           "options": {
-            "browserTarget": "angular-ai-contacts:build"
+            "buildTarget": "angular-ai-contacts:build"
           }
         },
         "test": {
-          "builder": "@angular-devkit/build-angular:karma",
+          "builder": "@angular/build:karma",
           "options": {
             "main": "src/test.ts",
             "polyfills": [],
             "tsConfig": "tsconfig.spec.json",
-            "karmaConfig": "karma.conf.js"
+            "karmaConfig": "karma.conf.cjs"
           }
         }
       }
     }
-  },
-  "defaultProject": "angular-ai-contacts"
+  }
 }

@@ -1,0 +1,22 @@
+<section class="page-card">
+  <div class="auth-card">
+    <h2>Sign in</h2>
+    <form (ngSubmit)="login()">
+      <div class="input-group">
+        <label for="username">Username</label>
+        <input id="username" name="username" [(ngModel)]="username" required />
+      </div>
+      <div class="input-group">
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" [(ngModel)]="password" required />
+      </div>
+      <div class="actions">
+        <button class="secondary" type="button" (click)="demoLogin()" [disabled]="loading()">Demo</button>
+        <button class="primary" type="submit" [disabled]="loading()">{{ loading() ? 'Signing in…' : 'Sign in' }}</button>
+      </div>
+      @if (authError()) {
+        <p class="error-message">{{ authError() }}</p>
+      }
+    </form>
+  </div>
+</section>

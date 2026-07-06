@@ -9,26 +9,38 @@ import {
 } from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
 import { delay, mergeMap } from 'rxjs/operators';
-import { Contact, AuthToken } from '../models';
+import { AuthToken } from '../models/auth-token.model';
+import { ContactDetail } from '../models/contact-detail.model';
+import { ContactList } from '../models/contact-list.model';
 
-const mockContacts: Contact[] = [
+const mockContacts: ContactDetail[] = [
   {
-    id: '1',
+    id: 1,
+    tenantId: 1,
     firstName: 'Maya',
+    middleName: '',
     lastName: 'Dane',
+    companyName: 'MD Management Studio',
     email: 'maya.dane@example.com',
-    phone: '+1 555 0123',
-    company: 'MD Management Studio',
-    notes: 'Core contact for event planning.'
+    web: 'https://mdms.example.com',
+    notes: 'Core contact for event planning.',
+    isActive: true,
+    createdAt: '2026-01-10T08:30:00Z',
+    modifiedAt: '2026-06-25T14:15:00Z'
   },
   {
-    id: '2',
+    id: 2,
+    tenantId: 1,
     firstName: 'James',
+    middleName: '',
     lastName: 'Harper',
+    companyName: 'Studio Finance',
     email: 'james.harper@example.com',
-    phone: '+1 555 0456',
-    company: 'Studio Finance',
-    notes: 'Accounts lead.'
+    web: '',
+    notes: 'Accounts lead.',
+    isActive: true,
+    createdAt: '2026-02-01T11:00:00Z',
+    modifiedAt: '2026-06-20T09:45:00Z'
   }
 ];
 
@@ -43,11 +55,16 @@ export class MockBackendInterceptor implements HttpInterceptor {
         }
 
         if (req.url.endsWith('/contacts') && req.method === 'GET') {
-          return of(new HttpResponse({ status: 200, body: mockContacts }));
+          const listItems: ContactList[] = mockContacts.map(({ id, firstName, lastName }) => ({
+            id,
+            firstName,
+            lastName
+          }));
+          return of(new HttpResponse({ status: 200, body: listItems }));
         }
 
         if (req.url.match(/\/contacts\/\w+$/) && req.method === 'GET') {
-          const id = req.url.split('/').pop() as string;
+          const id = Number(req.url.split('/').pop());
           const contact = mockContacts.find(item => item.id === id);
           return contact
             ? of(new HttpResponse({ status: 200, body: contact }))
@@ -55,24 +72,50 @@ export class MockBackendInterceptor implements HttpInterceptor {
         }
 
         if (req.url.endsWith('/contacts') && req.method === 'POST') {
-          const newContact = { ...(req.body as Contact), id: `${Date.now()}` };
+          const body = req.body as ContactDetail;
+          const now = new Date().toISOString();
+          const maxId = mockContacts.reduce((max, item) => Math.max(max, item.id), 0);
+          const newContact: ContactDetail = {
+            id: maxId + 1,
+            tenantId: body.tenantId ?? 1,
+            firstName: body.firstName ?? '',
+            middleName: body.middleName ?? '',
+            lastName: body.lastName,
+            companyName: body.companyName ?? '',
+            email: body.email ?? '',
+            web: body.web ?? '',
+            notes: body.notes ?? '',
+            isActive: body.isActive ?? true,
+            createdAt: now,
+            modifiedAt: now
+          };
           mockContacts.push(newContact);
           return of(new HttpResponse({ status: 201, body: newContact }));
         }
 
         if (req.url.match(/\/contacts\/\w+$/) && req.method === 'PUT') {
-          const id = req.url.split('/').pop() as string;
-          const body = req.body as Contact;
+          const id = Number(req.url.split('/').pop());
+          const body = req.body as ContactDetail;
           const index = mockContacts.findIndex(item => item.id === id);
           if (index === -1) {
             return throwError(() => ({ status: 404, error: 'Not found' }));
           }
-          mockContacts[index] = body;
-          return of(new HttpResponse({ status: 200, body: body }));
+
+          const existing = mockContacts[index];
+          const updated: ContactDetail = {
+            ...existing,
+            ...body,
+            id: existing.id,
+            isActive: existing.isActive,
+            createdAt: existing.createdAt,
+            modifiedAt: new Date().toISOString()
+          };
+          mockContacts[index] = updated;
+          return of(new HttpResponse({ status: 200, body: updated }));
         }
 
         if (req.url.match(/\/contacts\/\w+$/) && req.method === 'DELETE') {
-          const id = req.url.split('/').pop() as string;
+          const id = Number(req.url.split('/').pop());
           const index = mockContacts.findIndex(item => item.id === id);
           if (index === -1) {
             return throwError(() => ({ status: 404, error: 'Not found' }));
