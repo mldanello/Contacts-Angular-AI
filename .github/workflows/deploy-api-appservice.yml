@@ -1,0 +1,113 @@
+name: Deploy API to Azure App Service
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: Deployment target
+        required: true
+        default: production
+        type: choice
+        options:
+          - staging
+          - production
+      api_webapp_name:
+        description: Optional API App Service name override
+        required: false
+        type: string
+      resource_group:
+        description: Optional Resource Group override
+        required: false
+        type: string
+      project_path:
+        description: Optional path to API .csproj
+        required: false
+        type: string
+
+env:
+  DOTNET_VERSION: '8.0.x'
+  API_WEBAPP_NAME_PRODUCTION: mdms-api-app
+  API_RESOURCE_GROUP_PRODUCTION: MD-ManagementStudio-2
+  API_WEBAPP_NAME_STAGING: mdms-api-app-staging
+  API_RESOURCE_GROUP_STAGING: MD-ManagementStudio-2
+
+jobs:
+  build-and-deploy-api:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Resolve deployment target
+        shell: bash
+        run: |
+          target="${{ inputs.target }}"
+
+          if [[ "$target" == "staging" ]]; then
+            webapp="${{ env.API_WEBAPP_NAME_STAGING }}"
+            rg="${{ env.API_RESOURCE_GROUP_STAGING }}"
+          else
+            webapp="${{ env.API_WEBAPP_NAME_PRODUCTION }}"
+            rg="${{ env.API_RESOURCE_GROUP_PRODUCTION }}"
+          fi
+
+          if [[ -n "${{ inputs.api_webapp_name }}" ]]; then
+            webapp="${{ inputs.api_webapp_name }}"
+          fi
+
+          if [[ -n "${{ inputs.resource_group }}" ]]; then
+            rg="${{ inputs.resource_group }}"
+          fi
+
+          echo "DEPLOY_WEBAPP_NAME=$webapp" >> "$GITHUB_ENV"
+          echo "DEPLOY_RESOURCE_GROUP=$rg" >> "$GITHUB_ENV"
+
+          echo "Resolved target: $target"
+          echo "Resolved app: $webapp"
+          echo "Resolved resource group: $rg"
+
+      - name: Resolve API project path
+        shell: bash
+        run: |
+          if [[ -n "${{ inputs.project_path }}" ]]; then
+            project_path="${{ inputs.project_path }}"
+          else
+            project_path="$(find . -name '*.csproj' -print | head -n 1)"
+          fi
+
+          if [[ -z "$project_path" ]]; then
+            echo "No .csproj file found. Provide workflow input 'project_path' with your API project path."
+            exit 1
+          fi
+
+          echo "API_PROJECT_PATH=$project_path" >> "$GITHUB_ENV"
+          echo "Using API project: $project_path"
+
+      - name: Restore
+        run: dotnet restore "${{ env.API_PROJECT_PATH }}"
+
+      - name: Publish
+        run: dotnet publish "${{ env.API_PROJECT_PATH }}" --configuration Release --output ./publish
+
+      - name: Azure login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Deploy API package
+        run: |
+          cd publish
+          zip -r ../api.zip .
+          cd ..
+          az webapp deploy \
+            --resource-group "${{ env.DEPLOY_RESOURCE_GROUP }}" \
+            --name "${{ env.DEPLOY_WEBAPP_NAME }}" \
+            --src-path "api.zip" \
+            --type zip \
+            --clean true

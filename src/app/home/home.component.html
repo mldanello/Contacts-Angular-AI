@@ -11,4 +11,24 @@
       </div>
     </div>
   </div>
+
+  <div class="api-health-panel">
+    <h3>API Health Check</h3>
+    <p>Verify browser connectivity to the Azure API from this deployed Angular app.</p>
+    <button
+      type="button"
+      class="health-check-button"
+      (click)="checkApiConnection()"
+      [disabled]="checkingApi()"
+    >
+      {{ checkingApi() ? 'Checking...' : 'Check API Connection' }}
+    </button>
+    <p
+      class="api-health-status"
+      [class.success]="apiStatus() === 'success'"
+      [class.error]="apiStatus() === 'error'"
+    >
+      {{ apiStatusMessage() }}
+    </p>
+  </div>
 </section>

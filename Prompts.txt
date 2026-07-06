@@ -13,3 +13,11 @@ isActive: boolean readonly
 createdAt: datetime readonly
 modifiedAt: datetime readonly
 and put the models in separate typescript files
+
+
+
+
+Use Angular Material icon support for rendering, but load SVG icons (not icon fonts) for better control and consistency.  Change the links on the contact list, change edit to a pencil icon, change delete to a trashcan icon.  On the contact Details, add a pencil icon to the edit button along with the text 'edit' and add a trashcan icon to the Delete button along with the text.  find appropiate icons for the Cancel and reset buttons
+
+for the API:
+help me deploy my application to Azure.  Use Azure Bicep to create a resource group for the app, name the resource group MD-Management-Studio-2, create a Azure sql server database using the free option, store the connection string in a key vault.  update the configuration to use the connection string from the key vault, deploy an app service for the API, and deploy the contactsAPI to the app service, share the URL to the API once completed for use in the angular UI

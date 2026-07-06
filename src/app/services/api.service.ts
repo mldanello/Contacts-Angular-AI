@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { AuthToken } from '../models/auth-token.model';
 import { ContactList } from '../models/contact-list.model';
@@ -43,5 +43,30 @@ export class ApiService {
 
   async deleteContact(id: number): Promise<void> {
     return firstValueFrom(this.http.delete<void>(`${this.contactsUrl}/${id}`));
+  }
+
+  async checkApiReachability(): Promise<boolean> {
+    try {
+      const response = await firstValueFrom(
+        this.http.get<unknown>(this.contactsUrl, { observe: 'response' })
+      );
+      return this.isReachableResponse(response);
+    } catch (error: unknown) {
+      const status = this.getHttpStatus(error);
+      return status > 0;
+    }
+  }
+
+  private isReachableResponse(response: HttpResponse<unknown>): boolean {
+    return response.status > 0;
+  }
+
+  private getHttpStatus(error: unknown): number {
+    if (!error || typeof error !== 'object') {
+      return 0;
+    }
+
+    const maybeStatus = (error as { status?: unknown }).status;
+    return typeof maybeStatus === 'number' ? maybeStatus : 0;
   }
 }
