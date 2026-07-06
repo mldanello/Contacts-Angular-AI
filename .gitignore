@@ -9,3 +9,4 @@ coverage/
 *.log
 environment.ts
 environment.prod.ts
+Prompts.txt
