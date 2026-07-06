@@ -12,7 +12,7 @@
               <button type="button" class="secondary icon-button" (click)="$event.stopPropagation(); selectContact(contact, true)" aria-label="Edit contact" title="Edit">
                 <mat-icon svgIcon="contact-edit"></mat-icon>
               </button>
-              <button type="button" class="danger icon-button" (click)="$event.stopPropagation(); confirmDelete(contact.id)" aria-label="Delete contact" title="Delete">
+              <button type="button" class="danger icon-button" (click)="$event.stopPropagation(); confirmDelete(contact.id, contact.firstName + ' ' + contact.lastName)" aria-label="Delete contact" title="Delete">
                 <mat-icon svgIcon="contact-delete"></mat-icon>
               </button>
             </div>
@@ -51,7 +51,7 @@
             <mat-icon svgIcon="contact-edit"></mat-icon>
             edit
           </button>
-          <button class="danger" type="button" (click)="confirmDelete(selectedContact().id)">
+          <button class="danger" type="button" (click)="confirmDelete(selectedContact().id, selectedContact().firstName + ' ' + selectedContact().lastName)">
             <mat-icon svgIcon="contact-delete"></mat-icon>
             Delete
           </button>
@@ -133,7 +133,7 @@
               Reset
             </button>
             @if (selectedContact().id > 0) {
-              <button class="danger" type="button" (click)="removeContact(selectedContact().id)">
+              <button class="danger" type="button" (click)="confirmDelete(selectedContact().id, selectedContact().firstName + ' ' + selectedContact().lastName)">
                 <mat-icon svgIcon="contact-delete"></mat-icon>
                 Delete
               </button>

@@ -169,8 +169,13 @@ export class ContactsComponent {
     }
   }
 
-  confirmDelete(id: number): void {
-    const confirmed = window.confirm('Are you sure you want to delete this contact?');
+  confirmDelete(id: number, displayName?: string): void {
+    const trimmedName = (displayName ?? '').trim();
+    const message = trimmedName
+      ? `Are you sure you want to delete ${trimmedName}?`
+      : 'Are you sure you want to delete this contact?';
+
+    const confirmed = window.confirm(message);
     if (!confirmed) {
       return;
     }
