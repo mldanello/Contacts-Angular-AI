@@ -47,6 +47,15 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Apply deployment build version
+        shell: bash
+        run: |
+          BASE_VERSION="v1.0.1"
+          BUILD_VERSION="${BASE_VERSION}+build.${{ github.run_number }}"
+          echo "Using app version: ${BUILD_VERSION}"
+
+          BUILD_VERSION="$BUILD_VERSION" node -e "const fs=require('fs'); const files=['src/environments/environment.ts','src/environments/environment.prod.ts']; const version=process.env.BUILD_VERSION; for (const file of files) { const content=fs.readFileSync(file,'utf8'); const updated=content.replace(/appVersion:\s*'[^']*'/, \`appVersion: '${version}'\`); if (content===updated) { throw new Error('Unable to update appVersion in '+file); } fs.writeFileSync(file, updated, 'utf8'); }"
+
       - name: Build production bundle
         run: npm run build:prod
 

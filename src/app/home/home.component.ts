@@ -1,5 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { ApiService } from '../services/api.service';
+import { environment } from '../../environments/environment';
 
 @Component({
   standalone: true,
@@ -9,6 +10,7 @@ import { ApiService } from '../services/api.service';
 })
 export class HomeComponent {
   private api = inject(ApiService);
+  readonly appVersion = environment.appVersion;
 
   checkingApi = signal(false);
   apiStatus = signal<'idle' | 'success' | 'error'>('idle');
