@@ -106,24 +106,34 @@
             <input id="web" name="web" [ngModel]="selectedContact().web" (ngModelChange)="setSelectedContactField('web', $event)" />
           </div>
 
-          <div class="input-group">
+          <div class="input-group input-group-wide">
             <label for="notes">Notes</label>
             <textarea id="notes" name="notes" rows="6" [ngModel]="selectedContact().notes" (ngModelChange)="setSelectedContactField('notes', $event)"></textarea>
           </div>
 
-          <div class="input-group">
-            <label for="isActive">Is active</label>
-            <input id="isActive" name="isActive" [ngModel]="selectedContact().isActive ? 'Yes' : 'No'" readonly tabindex="-1" />
-          </div>
+          <div class="metadata-row input-group-wide">
+            <div class="input-group meta-field meta-checkbox-field">
+              <label for="isActive">Is active</label>
+              <label class="checkbox-inline" for="isActive">
+                <input
+                  id="isActive"
+                  name="isActive"
+                  type="checkbox"
+                  [ngModel]="selectedContact().isActive"
+                  (ngModelChange)="setSelectedContactIsActive($event)" />
+                <span>{{ selectedContact().isActive ? 'Yes' : 'No' }}</span>
+              </label>
+            </div>
 
-          <div class="input-group">
-            <label for="createdAt">Created at</label>
-            <input id="createdAt" name="createdAt" [ngModel]="selectedContact().createdAt" readonly tabindex="-1" />
-          </div>
+            <div class="input-group meta-field">
+              <label for="createdAt">Created at</label>
+              <input id="createdAt" name="createdAt" [ngModel]="selectedContact().createdAt" readonly tabindex="-1" />
+            </div>
 
-          <div class="input-group">
-            <label for="modifiedAt">Modified at</label>
-            <input id="modifiedAt" name="modifiedAt" [ngModel]="selectedContact().modifiedAt" readonly tabindex="-1" />
+            <div class="input-group meta-field">
+              <label for="modifiedAt">Modified at</label>
+              <input id="modifiedAt" name="modifiedAt" [ngModel]="selectedContact().modifiedAt" readonly tabindex="-1" />
+            </div>
           </div>
 
           <div class="actions detail-actions">

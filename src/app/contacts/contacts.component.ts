@@ -149,6 +149,10 @@ export class ContactsComponent {
     this.selectedContact.update(contact => ({ ...contact, [field]: value }));
   }
 
+  setSelectedContactIsActive(value: boolean): void {
+    this.selectedContact.update(contact => ({ ...contact, isActive: value }));
+  }
+
   async saveContact(): Promise<void> {
     this.error.set('');
     this.message.set('');

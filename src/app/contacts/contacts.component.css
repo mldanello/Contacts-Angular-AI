@@ -1,6 +1,6 @@
 .contacts-layout {
   display: grid;
-  grid-template-columns: 1.2fr 0.9fr;
+  grid-template-columns: 0.85fr 1.15fr;
   gap: 1.5rem;
   align-items: stretch;
   min-width: 0;
@@ -230,7 +230,64 @@
 
 .contact-detail form {
   display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 0.8rem;
+}
+
+.contact-detail form > .input-group {
+  min-width: 0;
+}
+
+.contact-detail form > .actions,
+.contact-detail form > .info-message,
+.contact-detail form > .error-message {
+  grid-column: 1 / -1;
+}
+
+.contact-detail form .input-group-wide {
+  grid-column: 1 / -1;
+}
+
+.metadata-row {
+  display: grid;
+  grid-template-columns: minmax(0, 0.75fr) minmax(0, 1fr) minmax(0, 1fr);
+  gap: 0.55rem;
+  align-items: end;
+}
+
+.meta-field label {
+  font-size: 0.8rem;
+}
+
+.meta-field input {
+  min-height: 1.72rem;
+  padding: 0.34rem 0.62rem;
+  font-size: 0.82rem;
+}
+
+.meta-checkbox-field {
+  align-self: end;
+}
+
+.checkbox-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.38rem;
+  min-height: 1.72rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 0.62rem;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  color: #334155;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.checkbox-inline input[type='checkbox'] {
+  width: 0.9rem;
+  height: 0.9rem;
+  margin: 0;
 }
 
 .input-group {
@@ -412,6 +469,14 @@ button:disabled {
     grid-template-columns: 1fr;
   }
 
+  .contact-detail form {
+    grid-template-columns: 1fr;
+  }
+
+  .metadata-row {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
   .contacts-panel,
   .contact-detail {
     position: static;
@@ -495,6 +560,10 @@ button:disabled {
 
   .new-contact-button {
     width: 7rem;
+  }
+
+  .metadata-row {
+    grid-template-columns: 1fr;
   }
 
   .detail-row {
