@@ -1,19 +1,21 @@
 <section class="page-card page-contacts-wide">
-  @if (showResponsiveDebug()) {
+  @if (allowResponsiveDebug && showResponsiveDebug()) {
     <div class="responsive-debug-badge" aria-hidden="true"></div>
   }
   <div class="contacts-layout">
     <div class="contacts-panel">
       <div class="actions panel-header" style="justify-content: space-between;">
         <h2>Contacts</h2>
-        <button
-          class="secondary debug-toggle-button"
-          type="button"
-          (click)="toggleResponsiveDebug()"
-          [attr.aria-pressed]="showResponsiveDebug()"
-          [attr.aria-label]="showResponsiveDebug() ? 'Disable layout debug labels' : 'Enable layout debug labels'">
-          {{ showResponsiveDebug() ? 'Hide Layout Debug' : 'Show Layout Debug' }}
-        </button>
+        @if (allowResponsiveDebug) {
+          <button
+            class="secondary debug-toggle-button"
+            type="button"
+            (click)="toggleResponsiveDebug()"
+            [attr.aria-pressed]="showResponsiveDebug()"
+            [attr.aria-label]="showResponsiveDebug() ? 'Disable layout debug labels' : 'Enable layout debug labels'">
+            {{ showResponsiveDebug() ? 'Hide Layout Debug' : 'Show Layout Debug' }}
+          </button>
+        }
       </div>
       <div class="contact-list-scroll">
         <div class="contact-list">

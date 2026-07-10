@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
+import { environment } from '../../environments/environment';
 import { ApiService } from '../services/api.service';
 import { AuthService } from '../services/auth.service';
 import { ContactList } from '../models/contact-list.model';
@@ -29,6 +30,7 @@ export class ContactsComponent {
   loading = signal(false);
   loadingDetail = signal(false);
   showResponsiveDebug = signal(false);
+  allowResponsiveDebug = !environment.production;
 
   contacts = signal<ContactList[]>([]);
   selectedContactId = signal<number | null>(null);
@@ -39,7 +41,7 @@ export class ContactsComponent {
   constructor() {
     this.registerIcons();
     this.route.queryParamMap.subscribe(params => {
-      this.showResponsiveDebug.set(this.isTruthyQueryFlag(params.get('debugLayout')));
+      this.showResponsiveDebug.set(this.allowResponsiveDebug && this.isTruthyQueryFlag(params.get('debugLayout')));
     });
 
     if (!this.authService.isAuthenticated()) {
@@ -50,6 +52,10 @@ export class ContactsComponent {
   }
 
   toggleResponsiveDebug(): void {
+    if (!this.allowResponsiveDebug) {
+      return;
+    }
+
     const enable = !this.showResponsiveDebug();
     this.router.navigate([], {
       relativeTo: this.route,
