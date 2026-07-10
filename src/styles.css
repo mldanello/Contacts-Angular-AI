@@ -57,8 +57,9 @@ button, input, textarea, select {
 }
 
 .app-container {
-  padding: 1.5rem;
-  max-width: 1200px;
+  padding: clamp(1rem, 1.8vw, 1.75rem);
+  width: 100%;
+  max-width: none;
   margin: 0 auto;
 }
 
@@ -67,6 +68,17 @@ button, input, textarea, select {
   border-radius: 1rem;
   box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
   padding: 1.5rem;
+}
+
+.page-home-wide,
+.page-contacts-wide {
+  width: min(96vw, 1720px);
+  margin: 0 auto;
+}
+
+.page-login-narrow {
+  width: min(94vw, 640px);
+  margin: 0 auto;
 }
 
 .hero {
