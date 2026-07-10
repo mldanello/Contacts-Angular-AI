@@ -9,6 +9,16 @@
       } @else {
         <a routerLink="/login" routerLinkActive="active">Login</a>
       }
+      @if (allowLayoutDebug) {
+        <button
+          class="nav-action nav-debug-toggle"
+          type="button"
+          (click)="toggleLayoutDebug()"
+          [attr.aria-pressed]="showLayoutDebug()"
+          [attr.aria-label]="showLayoutDebug() ? 'Disable layout debug mode' : 'Enable layout debug mode'">
+          {{ showLayoutDebug() ? 'Layout Debug: On' : 'Layout Debug: Off' }}
+        </button>
+      }
     </nav>
   </header>
   <main class="app-container">

@@ -51,21 +51,6 @@ export class ContactsComponent {
     }
   }
 
-  toggleResponsiveDebug(): void {
-    if (!this.allowResponsiveDebug) {
-      return;
-    }
-
-    const enable = !this.showResponsiveDebug();
-    this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams: {
-        debugLayout: enable ? '1' : null
-      },
-      queryParamsHandling: 'merge'
-    });
-  }
-
   async loadContacts(): Promise<void> {
     this.loading.set(true);
     this.error.set('');

@@ -4,18 +4,12 @@
   }
   <div class="contacts-layout">
     <div class="contacts-panel">
-      <div class="actions panel-header" style="justify-content: space-between;">
+      <div class="actions panel-header">
         <h2>Contacts</h2>
-        @if (allowResponsiveDebug) {
-          <button
-            class="secondary debug-toggle-button"
-            type="button"
-            (click)="toggleResponsiveDebug()"
-            [attr.aria-pressed]="showResponsiveDebug()"
-            [attr.aria-label]="showResponsiveDebug() ? 'Disable layout debug labels' : 'Enable layout debug labels'">
-            {{ showResponsiveDebug() ? 'Hide Layout Debug' : 'Show Layout Debug' }}
-          </button>
-        }
+        <button class="primary new-contact-button" type="button" (click)="createNewContact()">
+          <mat-icon svgIcon="contact-new"></mat-icon>
+          New
+        </button>
       </div>
       <div class="contact-list-scroll">
         <div class="contact-list">
@@ -33,12 +27,6 @@
           </div>
         }
         </div>
-      </div>
-      <div class="actions list-actions">
-        <button class="primary new-contact-button" type="button" (click)="createNewContact()">
-          <mat-icon svgIcon="contact-new"></mat-icon>
-          New
-        </button>
       </div>
     </div>
 

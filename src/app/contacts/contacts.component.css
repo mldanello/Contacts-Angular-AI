@@ -33,7 +33,14 @@
   box-shadow: 0 4px 12px rgba(15, 23, 42, 0.16);
 }
 
-.contacts-panel,
+.contacts-panel {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  height: clamp(34rem, calc(100dvh - 12.5rem), 56rem);
+  min-width: 0;
+  overflow-x: hidden;
+}
+
 .contact-detail {
   display: grid;
   grid-template-rows: auto minmax(0, 1fr) auto;
@@ -42,8 +49,14 @@
   overflow-x: hidden;
 }
 
-.panel-header {
-  margin-bottom: 0.75rem;
+.actions.panel-header {
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.55rem;
+}
+
+.panel-header h2 {
+  margin: 0;
 }
 
 .contact-list-scroll {
@@ -56,14 +69,6 @@
 .contact-list {
   display: grid;
   gap: 0.55rem;
-}
-
-.list-actions {
-  justify-content: flex-end;
-  margin-top: 0.75rem;
-  padding-top: 0.75rem;
-  border-top: 1px solid #e2e8f0;
-  background: #ffffff;
 }
 
 .contact-item {
@@ -92,7 +97,7 @@
   color: white;
   cursor: pointer;
   font-weight: 600;
-  margin-top: 0.5rem;
+  margin-top: 0;
   box-shadow: 0 10px 22px rgba(37, 99, 235, 0.32), 0 1px 0 rgba(255, 255, 255, 0.2) inset;
   transition: box-shadow 0.2s ease, transform 0.2s ease;
 }
@@ -355,21 +360,6 @@ button.danger:hover {
   transform: translateY(-1px);
 }
 
-button.debug-toggle-button {
-  padding: 0.08rem 0.55rem;
-  min-height: 1.1rem;
-  font-size: 0.64rem;
-  line-height: 1;
-  border-radius: 999px;
-  letter-spacing: 0.01em;
-  white-space: nowrap;
-  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.14);
-}
-
-button.debug-toggle-button:hover {
-  transform: none;
-  box-shadow: 0 3px 10px rgba(15, 23, 42, 0.18);
-}
 
 mat-icon {
   width: 1rem;
@@ -415,9 +405,17 @@ button:disabled {
 
   .contacts-panel,
   .contact-detail {
+    position: static;
+  }
+
+  .contacts-panel {
+    height: auto;
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+
+  .contact-detail {
     height: auto;
     grid-template-rows: auto auto auto;
-    position: static;
   }
 
   .contact-list-scroll,
@@ -448,13 +446,9 @@ button:disabled {
     gap: 1rem;
   }
 
-  .debug-toggle-button {
-    justify-content: center;
-  }
-
   .contacts-panel {
     height: clamp(18rem, 44dvh, 26rem);
-    grid-template-rows: auto minmax(0, 1fr) auto;
+    grid-template-rows: auto minmax(0, 1fr);
   }
 
   .contact-detail {
@@ -469,7 +463,6 @@ button:disabled {
     padding-right: 0.25rem;
   }
 
-  .list-actions,
   .detail-actions {
     position: sticky;
     bottom: 0;
@@ -492,8 +485,7 @@ button:disabled {
   }
 
   .new-contact-button {
-    width: 100%;
-    margin-top: 0;
+    width: 7rem;
   }
 
   .detail-row {
@@ -517,7 +509,7 @@ button:disabled {
 
   .contacts-panel {
     height: clamp(12rem, 46dvh, 17rem);
-    grid-template-rows: auto minmax(0, 1fr) auto;
+    grid-template-rows: auto minmax(0, 1fr);
   }
 
   .contact-detail {
@@ -532,7 +524,6 @@ button:disabled {
     padding-right: 0.2rem;
   }
 
-  .list-actions,
   .detail-actions {
     position: sticky;
     bottom: 0;
@@ -588,9 +579,9 @@ button:disabled {
     padding: 0 0.95rem;
   }
 
-  .list-actions .new-contact-button {
+  .panel-header .new-contact-button {
     width: auto;
-    min-width: 10rem;
+    min-width: 7.8rem;
   }
 
   .input-group textarea {
