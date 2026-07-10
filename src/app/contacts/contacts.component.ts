@@ -1,7 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
 import { ApiService } from '../services/api.service';
@@ -18,6 +18,7 @@ import { ContactDetail } from '../models/contact-detail.model';
 })
 export class ContactsComponent {
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
   private authService = inject(AuthService);
   private api = inject(ApiService);
   private matIconRegistry = inject(MatIconRegistry);
@@ -27,6 +28,7 @@ export class ContactsComponent {
   error = signal('');
   loading = signal(false);
   loadingDetail = signal(false);
+  showResponsiveDebug = signal(false);
 
   contacts = signal<ContactList[]>([]);
   selectedContactId = signal<number | null>(null);
@@ -36,12 +38,26 @@ export class ContactsComponent {
 
   constructor() {
     this.registerIcons();
+    this.route.queryParamMap.subscribe(params => {
+      this.showResponsiveDebug.set(this.isTruthyQueryFlag(params.get('debugLayout')));
+    });
 
     if (!this.authService.isAuthenticated()) {
       this.router.navigate(['/login']);
     } else {
       this.loadContacts();
     }
+  }
+
+  toggleResponsiveDebug(): void {
+    const enable = !this.showResponsiveDebug();
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        debugLayout: enable ? '1' : null
+      },
+      queryParamsHandling: 'merge'
+    });
   }
 
   async loadContacts(): Promise<void> {
@@ -282,5 +298,14 @@ export class ContactsComponent {
       'contact-save',
       this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/save.svg')
     );
+  }
+
+  private isTruthyQueryFlag(value: string | null): boolean {
+    if (value === null) {
+      return false;
+    }
+
+    const normalized = value.trim().toLowerCase();
+    return normalized === '1' || normalized === 'true' || normalized === 'yes' || normalized === 'on';
   }
 }
