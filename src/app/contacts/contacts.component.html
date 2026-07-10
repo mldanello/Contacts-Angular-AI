@@ -1,10 +1,18 @@
-<section class="page-card">
+<section class="page-card page-contacts-wide">
+  @if (allowResponsiveDebug && showResponsiveDebug()) {
+    <div class="responsive-debug-badge" aria-hidden="true"></div>
+  }
   <div class="contacts-layout">
-    <div>
-      <div class="actions" style="justify-content: space-between;">
+    <div class="contacts-panel">
+      <div class="actions panel-header">
         <h2>Contacts</h2>
+        <button class="secondary new-contact-button" type="button" (click)="createNewContact()">
+          <mat-icon svgIcon="contact-new"></mat-icon>
+          New
+        </button>
       </div>
-      <div class="contact-list">
+      <div class="contact-list-scroll">
+        <div class="contact-list">
         @for (contact of contacts(); track contact.id) {
           <div class="contact-item" [class.selected]="selectedContactId() === contact.id" (click)="selectContact(contact)">
             <span class="contact-name">{{ contact.firstName }} {{ contact.lastName }}</span>
@@ -18,15 +26,14 @@
             </div>
           </div>
         }
-        <button class="primary new-contact-button" type="button" (click)="createNewContact()">
-          <mat-icon svgIcon="contact-new"></mat-icon>
-          New
-        </button>
+        </div>
       </div>
     </div>
 
     <div class="contact-detail">
       <h2>{{ selectedContact().id > 0 ? (editing() ? 'Edit Contact' : 'Contact Details') : 'Add Contact' }}</h2>
+
+      <div class="contact-detail-scroll">
 
       @if (loadingDetail()) {
         <p class="info-message">Loading contact details...</p>
@@ -46,7 +53,7 @@
           <div class="detail-row"><span class="detail-label">Created at</span><span>{{ selectedContact().createdAt }}</span></div>
           <div class="detail-row"><span class="detail-label">Modified at</span><span>{{ selectedContact().modifiedAt }}</span></div>
         </div>
-        <div class="actions">
+        <div class="actions detail-actions">
           <button class="primary" type="button" (click)="goToEditMode()">
             <mat-icon svgIcon="contact-edit"></mat-icon>
             edit
@@ -58,10 +65,38 @@
         </div>
       } @else if (!loadingDetail()) {
         <form #contactForm="ngForm" (ngSubmit)="saveContact()">
-          <div class="input-group">
-            <label for="id">Id</label>
-            <input id="id" name="id" [ngModel]="selectedContact().id" readonly tabindex="-1" />
+          <div class="contact-id-row input-group-wide" aria-label="Contact identifier">
+            <span class="contact-id-pill">
+              {{ selectedContact().id > 0 ? ('ID ' + selectedContact().id) : 'New Contact' }}
+            </span>
           </div>
+
+          <div class="edit-tab-bar input-group-wide" role="tablist" aria-label="Contact edit sections">
+            <button
+              type="button"
+              class="tab-button"
+              [class.active]="activeEditTab() === 'profile'"
+              (click)="setActiveEditTab('profile')"
+              aria-label="Show profile tab">
+              Profile
+              @if (profileDirty()) {
+                <span class="tab-dirty-dot" aria-label="Profile has unsaved changes"></span>
+              }
+            </button>
+            <button
+              type="button"
+              class="tab-button"
+              [class.active]="activeEditTab() === 'communication'"
+              (click)="setActiveEditTab('communication')"
+              aria-label="Show communication tab">
+              Communication
+              @if (communicationDirty()) {
+                <span class="tab-dirty-dot" aria-label="Communication has unsaved changes"></span>
+              }
+            </button>
+          </div>
+
+          <div class="tab-panel profile-panel input-group-wide" [class.active]="activeEditTab() === 'profile'">
 
           <div class="input-group">
             <label for="firstName">First name</label>
@@ -99,27 +134,190 @@
             <input id="web" name="web" [ngModel]="selectedContact().web" (ngModelChange)="setSelectedContactField('web', $event)" />
           </div>
 
-          <div class="input-group">
+          <div class="input-group input-group-wide">
             <label for="notes">Notes</label>
             <textarea id="notes" name="notes" rows="6" [ngModel]="selectedContact().notes" (ngModelChange)="setSelectedContactField('notes', $event)"></textarea>
           </div>
 
-          <div class="input-group">
-            <label for="isActive">Is active</label>
-            <input id="isActive" name="isActive" [ngModel]="selectedContact().isActive ? 'Yes' : 'No'" readonly tabindex="-1" />
+          <div class="metadata-row input-group-wide">
+            <div class="input-group meta-field meta-checkbox-field">
+              <label for="isActive">Is active</label>
+              <label class="checkbox-inline" for="isActive">
+                <input
+                  id="isActive"
+                  name="isActive"
+                  type="checkbox"
+                  [ngModel]="selectedContact().isActive"
+                  (ngModelChange)="setSelectedContactIsActive($event)" />
+                <span>{{ selectedContact().isActive ? 'Yes' : 'No' }}</span>
+              </label>
+            </div>
+
+            <div class="input-group meta-field">
+              <label for="createdAt">Created at</label>
+              <input id="createdAt" name="createdAt" [ngModel]="selectedContact().createdAt" readonly tabindex="-1" />
+            </div>
+
+            <div class="input-group meta-field">
+              <label for="modifiedAt">Modified at</label>
+              <input id="modifiedAt" name="modifiedAt" [ngModel]="selectedContact().modifiedAt" readonly tabindex="-1" />
+            </div>
+          </div>
           </div>
 
-          <div class="input-group">
-            <label for="createdAt">Created at</label>
-            <input id="createdAt" name="createdAt" [ngModel]="selectedContact().createdAt" readonly tabindex="-1" />
+          <div class="tab-panel communication-panel input-group-wide" [class.active]="activeEditTab() === 'communication'">
+            <section class="comm-section">
+              <div class="comm-section-header">
+                <h3>Addresses</h3>
+                <button type="button" class="secondary" (click)="openAddAddressDialog()">Add Address</button>
+              </div>
+              @if (communicationDraft().addresses.length === 0) {
+                <p class="comm-empty">No addresses yet.</p>
+              } @else {
+                <div class="comm-list">
+                  @for (address of communicationDraft().addresses; track $index) {
+                    <div class="comm-item">
+                      <div class="comm-item-text">
+                        <strong>{{ address.street1 || 'Address' }}</strong>
+                        <span>{{ address.street1 }}</span>
+                        @if (address.street2) {
+                          <span>{{ address.street2 }}</span>
+                        }
+                        <span>{{ address.city }} {{ address.state }} {{ address.zip }}</span>
+                        @if (address.county) {
+                          <span>{{ address.county }}</span>
+                        }
+                      </div>
+                      <div class="comm-item-actions">
+                        <button type="button" class="secondary icon-button" (click)="openEditAddressDialog($index)" aria-label="Edit address" title="Edit">
+                          <mat-icon svgIcon="contact-edit"></mat-icon>
+                        </button>
+                        <button type="button" class="danger icon-button" (click)="removeAddress($index)" aria-label="Delete address" title="Delete">
+                          <mat-icon svgIcon="contact-delete"></mat-icon>
+                        </button>
+                      </div>
+                    </div>
+                  }
+                </div>
+              }
+            </section>
+
+            <section class="comm-section">
+              <div class="comm-section-header">
+                <h3>Phone Numbers</h3>
+                <button type="button" class="secondary" (click)="openAddPhoneDialog()">Add Phone</button>
+              </div>
+              @if (communicationDraft().phones.length === 0) {
+                <p class="comm-empty">No phone numbers yet.</p>
+              } @else {
+                <div class="comm-list">
+                  @for (phone of communicationDraft().phones; track $index) {
+                    <div class="comm-item">
+                      <div class="comm-item-text">
+                        <strong>{{ phone.type || 'Phone' }}</strong>
+                        <span>{{ phone.number }}</span>
+                        @if (phone.isPrimary) {
+                          <span>Primary</span>
+                        }
+                        @if (!phone.isActive) {
+                          <span>Inactive</span>
+                        }
+                      </div>
+                      <div class="comm-item-actions">
+                        <button type="button" class="secondary icon-button" (click)="openEditPhoneDialog($index)" aria-label="Edit phone" title="Edit">
+                          <mat-icon svgIcon="contact-edit"></mat-icon>
+                        </button>
+                        <button type="button" class="danger icon-button" (click)="removePhone($index)" aria-label="Delete phone" title="Delete">
+                          <mat-icon svgIcon="contact-delete"></mat-icon>
+                        </button>
+                      </div>
+                    </div>
+                  }
+                </div>
+              }
+            </section>
           </div>
 
-          <div class="input-group">
-            <label for="modifiedAt">Modified at</label>
-            <input id="modifiedAt" name="modifiedAt" [ngModel]="selectedContact().modifiedAt" readonly tabindex="-1" />
-          </div>
+          @if (addressDialogOpen()) {
+            <div class="dialog-overlay" (click)="closeAddressDialog()"></div>
+            <div class="inline-dialog" role="dialog" aria-modal="true" aria-label="Address editor">
+              <h3>{{ addressDialogMode() === 'edit' ? 'Edit Address' : 'Add Address' }}</h3>
+              <div class="dialog-form-grid">
+                <div class="input-group">
+                  <label for="addressStreet1">Street 1</label>
+                  <input id="addressStreet1" name="addressStreet1" [ngModelOptions]="{ standalone: true }" [ngModel]="addressDialogForm().street1" (ngModelChange)="setAddressDialogField('street1', $event)" />
+                </div>
+                <div class="input-group input-group-wide">
+                  <label for="addressStreet2">Street 2</label>
+                  <input id="addressStreet2" name="addressStreet2" [ngModelOptions]="{ standalone: true }" [ngModel]="addressDialogForm().street2" (ngModelChange)="setAddressDialogField('street2', $event)" />
+                </div>
+                <div class="input-group">
+                  <label for="addressCity">City</label>
+                  <input id="addressCity" name="addressCity" [ngModelOptions]="{ standalone: true }" [ngModel]="addressDialogForm().city" (ngModelChange)="setAddressDialogField('city', $event)" />
+                </div>
+                <div class="input-group">
+                  <label for="addressCounty">County</label>
+                  <input id="addressCounty" name="addressCounty" [ngModelOptions]="{ standalone: true }" [ngModel]="addressDialogForm().county" (ngModelChange)="setAddressDialogField('county', $event)" />
+                </div>
+                <div class="input-group">
+                  <label for="addressState">State</label>
+                  <input id="addressState" name="addressState" [ngModelOptions]="{ standalone: true }" [ngModel]="addressDialogForm().state" (ngModelChange)="setAddressDialogField('state', $event)" />
+                </div>
+                <div class="input-group">
+                  <label for="addressZip">Zip</label>
+                  <input id="addressZip" name="addressZip" [ngModelOptions]="{ standalone: true }" [ngModel]="addressDialogForm().zip" (ngModelChange)="setAddressDialogField('zip', $event)" />
+                </div>
+                <div class="input-group">
+                  <label for="addressIsActive">Status</label>
+                  <label class="checkbox-inline" for="addressIsActive">
+                    <input id="addressIsActive" name="addressIsActive" type="checkbox" [ngModelOptions]="{ standalone: true }" [ngModel]="addressDialogForm().isActive" (ngModelChange)="setAddressDialogField('isActive', $event)" />
+                    <span>{{ addressDialogForm().isActive ? 'Active' : 'Inactive' }}</span>
+                  </label>
+                </div>
+              </div>
+              <div class="actions dialog-actions">
+                <button type="button" class="secondary" (click)="closeAddressDialog()">Cancel</button>
+                <button type="button" class="primary" [disabled]="!addressDialogForm().street1.trim()" (click)="saveAddressDialog()">Save Address</button>
+              </div>
+            </div>
+          }
 
-          <div class="actions">
+          @if (phoneDialogOpen()) {
+            <div class="dialog-overlay" (click)="closePhoneDialog()"></div>
+            <div class="inline-dialog" role="dialog" aria-modal="true" aria-label="Phone editor">
+              <h3>{{ phoneDialogMode() === 'edit' ? 'Edit Phone' : 'Add Phone' }}</h3>
+              <div class="dialog-form-grid">
+                <div class="input-group">
+                  <label for="phoneType">Type</label>
+                  <input id="phoneType" name="phoneType" [ngModelOptions]="{ standalone: true }" [ngModel]="phoneDialogForm().type" (ngModelChange)="setPhoneDialogField('type', $event)" />
+                </div>
+                <div class="input-group">
+                  <label for="phoneNumber">Number</label>
+                  <input id="phoneNumber" name="phoneNumber" [ngModelOptions]="{ standalone: true }" [ngModel]="phoneDialogForm().number" (ngModelChange)="setPhoneDialogField('number', $event)" />
+                </div>
+                <div class="input-group">
+                  <label for="phoneIsPrimary">Primary</label>
+                  <label class="checkbox-inline" for="phoneIsPrimary">
+                    <input id="phoneIsPrimary" name="phoneIsPrimary" type="checkbox" [ngModelOptions]="{ standalone: true }" [ngModel]="phoneDialogForm().isPrimary" (ngModelChange)="setPhoneDialogField('isPrimary', $event)" />
+                    <span>{{ phoneDialogForm().isPrimary ? 'Primary' : 'Secondary' }}</span>
+                  </label>
+                </div>
+                <div class="input-group">
+                  <label for="phoneIsActive">Status</label>
+                  <label class="checkbox-inline" for="phoneIsActive">
+                    <input id="phoneIsActive" name="phoneIsActive" type="checkbox" [ngModelOptions]="{ standalone: true }" [ngModel]="phoneDialogForm().isActive" (ngModelChange)="setPhoneDialogField('isActive', $event)" />
+                    <span>{{ phoneDialogForm().isActive ? 'Active' : 'Inactive' }}</span>
+                  </label>
+                </div>
+              </div>
+              <div class="actions dialog-actions">
+                <button type="button" class="secondary" (click)="closePhoneDialog()">Cancel</button>
+                <button type="button" class="primary" [disabled]="!phoneDialogForm().number.trim()" (click)="savePhoneDialog()">Save Phone</button>
+              </div>
+            </div>
+          }
+
+          <div class="actions detail-actions">
             <button class="primary" type="submit" [disabled]="contactForm.invalid">
               <mat-icon svgIcon="contact-save"></mat-icon>
               Save
@@ -148,6 +346,7 @@
       @if (error()) {
         <p class="error-message">{{ error() }}</p>
       }
+      </div>
     </div>
   </div>
 </section>
