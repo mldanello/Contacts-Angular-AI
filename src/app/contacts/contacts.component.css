@@ -86,26 +86,17 @@
 
 .new-contact-button {
   width: 8rem;
-  height: 1.9rem;
-  display: inline-flex;
-  align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  border-radius: 0.75rem;
-  border: none;
-  background: #2563eb;
-  color: white;
-  cursor: pointer;
-  font-weight: 600;
+  border-color: #b8c9dd;
+  background: #edf3f8;
+  color: #2f445b;
   margin-top: 0;
-  box-shadow: 0 10px 22px rgba(37, 99, 235, 0.32), 0 1px 0 rgba(255, 255, 255, 0.2) inset;
-  transition: box-shadow 0.2s ease, transform 0.2s ease;
 }
 
 .new-contact-button:hover {
-  background: #1d4ed8;
-  box-shadow: 0 14px 28px rgba(29, 78, 216, 0.38), 0 1px 0 rgba(255, 255, 255, 0.2) inset;
-  transform: translateY(-1px);
+  background: #e2ebf3;
+  border-color: #a5bbd3;
+  color: #24384d;
 }
 
 .contact-item.selected {
@@ -268,6 +259,192 @@
   font-weight: 700;
   letter-spacing: 0.01em;
   white-space: nowrap;
+}
+
+.edit-tab-bar {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.tab-button {
+  border: 1px solid #cbd5e1;
+  background: #f8fafc;
+  color: #334155;
+  border-radius: 0.7rem;
+  height: 1.85rem;
+  padding: 0 0.9rem;
+  cursor: pointer;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.tab-button.active {
+  border-color: #93c5fd;
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+.tab-dirty-dot {
+  width: 0.42rem;
+  height: 0.42rem;
+  border-radius: 999px;
+  background: #f97316;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.85);
+}
+
+.tab-panel {
+  display: none;
+}
+
+.tab-panel.active {
+  display: block;
+}
+
+.profile-panel {
+  display: none;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 0.8rem;
+}
+
+.profile-panel.active {
+  display: grid;
+}
+
+.profile-panel .input-group-wide {
+  grid-column: 1 / -1;
+}
+
+.communication-panel {
+  display: none;
+  gap: 0.85rem;
+}
+
+.communication-panel.active {
+  display: grid;
+}
+
+.comm-section {
+  border: 1px solid #e2e8f0;
+  border-radius: 0.85rem;
+  padding: 0.7rem;
+  background: #ffffff;
+}
+
+.comm-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.55rem;
+}
+
+.comm-section-header h3 {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.comm-empty {
+  margin: 0;
+  color: #64748b;
+  font-size: 0.88rem;
+}
+
+.comm-list {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.comm-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.5rem;
+  align-items: start;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.7rem;
+  padding: 0.5rem 0.55rem;
+  background: #f8fafc;
+}
+
+.comm-item-text {
+  display: grid;
+  gap: 0.15rem;
+  font-size: 0.84rem;
+  color: #334155;
+}
+
+.comm-item-text strong {
+  color: #0f172a;
+}
+
+.comm-item-actions {
+  display: flex;
+  gap: 0.28rem;
+}
+
+.comm-item-actions .icon-button {
+  width: 1.58rem;
+  height: 1.58rem;
+  padding: 0.14rem;
+  border: none;
+  background: #ffffff;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 14px rgba(15, 23, 42, 0.2);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.comm-item-actions .icon-button.secondary {
+  color: #2563eb;
+}
+
+.comm-item-actions .icon-button.danger {
+  color: #ef4444;
+}
+
+.comm-item-actions .icon-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 20px rgba(15, 23, 42, 0.24);
+}
+
+.dialog-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.3);
+  z-index: 40;
+}
+
+.inline-dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(92vw, 34rem);
+  max-height: min(82vh, 40rem);
+  overflow: auto;
+  z-index: 41;
+  background: #ffffff;
+  border: 1px solid #dbeafe;
+  border-radius: 0.95rem;
+  padding: 0.9rem;
+  box-shadow: 0 26px 56px rgba(15, 23, 42, 0.24);
+}
+
+.inline-dialog h3 {
+  margin: 0 0 0.7rem;
+}
+
+.dialog-form-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 0.65rem;
+}
+
+.dialog-actions {
+  margin-top: 0.75rem;
 }
 
 .metadata-row {
@@ -495,6 +672,10 @@ button:disabled {
     grid-template-columns: 1fr;
   }
 
+  .profile-panel {
+    grid-template-columns: 1fr;
+  }
+
   .metadata-row {
     grid-template-columns: 1fr 1fr 1fr;
   }
@@ -585,6 +766,10 @@ button:disabled {
   }
 
   .metadata-row {
+    grid-template-columns: 1fr;
+  }
+
+  .dialog-form-grid {
     grid-template-columns: 1fr;
   }
 
