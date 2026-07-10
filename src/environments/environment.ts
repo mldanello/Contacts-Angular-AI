@@ -1,6 +1,6 @@
 export const environment = {
 	production: false,
-	appVersion: 'v1.0.3.2',
+		appVersion: '1.0.4.0',
 	apiBaseUrl: 'http://localhost:4200/api',
 	useMockBackend: false
 };

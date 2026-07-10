@@ -52,6 +52,8 @@ $versionInfo = [ordered]@{
 	gitCommit = $gitCommit
 }
 
-$versionInfo | ConvertTo-Json | Set-Content -Path $versionTarget -Encoding UTF8
+$versionJson = $versionInfo | ConvertTo-Json
+$utf8NoBom = New-Object System.Text.UTF8Encoding($false)
+[System.IO.File]::WriteAllText($versionTarget, $versionJson, $utf8NoBom)
 
 Write-Host "Prepared UI package. Copied custom App Service server to '$serverTarget' and wrote '$versionTarget'."
