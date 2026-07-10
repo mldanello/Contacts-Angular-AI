@@ -6,11 +6,14 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve angular-ai-contacts --host 0.0.0.0 --port 4200 --proxy-config proxy.conf.json",
-    "build": "ng build angular-ai-contacts",
+    "build": "ng build angular-ai-contacts --configuration production",
+    "build:dev": "ng build angular-ai-contacts --configuration development",
     "build:prod": "ng build angular-ai-contacts --configuration production",
-    "zip:ui": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"if (Test-Path './angular-ui-posix.zip') { Remove-Item './angular-ui-posix.zip' -Force }; tar -a -c -f './angular-ui-posix.zip' -C './dist/angular-ai-contacts/browser' .\"",
+    "validate:ui:hashes": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/validate-ui-build.ps1",
+    "prepare:ui:package": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/prepare-ui-package.ps1",
+    "zip:ui": "npm run prepare:ui:package && powershell -NoProfile -ExecutionPolicy Bypass -Command \"if (Test-Path './angular-ui-posix.zip') { Remove-Item './angular-ui-posix.zip' -Force }; tar -a -c -f './angular-ui-posix.zip' -C './dist/angular-ai-contacts/browser' .\"",
     "deploy:ui": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/deploy-ui.ps1",
-    "deploy:ui:all": "npm run build:prod && npm run zip:ui && npm run deploy:ui",
+    "deploy:ui:all": "npm run build:prod && npm run validate:ui:hashes && npm run zip:ui && npm run deploy:ui",
     "test": "ng test angular-ai-contacts",
     "lint": "ng lint"
   },
