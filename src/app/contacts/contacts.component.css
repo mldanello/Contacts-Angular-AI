@@ -248,6 +248,28 @@
   grid-column: 1 / -1;
 }
 
+.contact-id-row {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-bottom: 0.1rem;
+}
+
+.contact-id-pill {
+  display: inline-flex;
+  align-items: center;
+  height: 1.45rem;
+  padding: 0 0.62rem;
+  border-radius: 999px;
+  border: 1px solid #dbeafe;
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
 .metadata-row {
   display: grid;
   grid-template-columns: minmax(0, 0.75fr) minmax(0, 1fr) minmax(0, 1fr);

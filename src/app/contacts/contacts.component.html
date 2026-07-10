@@ -65,9 +65,10 @@
         </div>
       } @else if (!loadingDetail()) {
         <form #contactForm="ngForm" (ngSubmit)="saveContact()">
-          <div class="input-group">
-            <label for="id">Id</label>
-            <input id="id" name="id" [ngModel]="selectedContact().id" readonly tabindex="-1" />
+          <div class="contact-id-row input-group-wide" aria-label="Contact identifier">
+            <span class="contact-id-pill">
+              {{ selectedContact().id > 0 ? ('ID ' + selectedContact().id) : 'New Contact' }}
+            </span>
           </div>
 
           <div class="input-group">
