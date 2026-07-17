@@ -29,7 +29,7 @@
 
       @if (suggestionsOpen) {
         <div id="contact-search-tag-dropdown" class="search-tag-dropdown" role="listbox" aria-label="Available search tags">
-          @if (loadingSuggestions) {
+          @if (loadingSuggestions && filteredSuggestions.length === 0) {
             <div class="search-tag-dropdown-loading">
               <span class="search-tag-dropdown-spinner" aria-hidden="true"></span>
               <span>Loading tags...</span>

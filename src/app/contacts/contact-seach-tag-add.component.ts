@@ -35,11 +35,6 @@ export class ContactSearchTagAddComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['contactId'] && !changes['contactId'].firstChange) {
-      void this.loadAvailableSearchTags();
-      return;
-    }
-
     if (changes['tags']) {
       this.ensureSuggestionsIncludeCurrentTags();
     }
