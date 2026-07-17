@@ -206,6 +206,36 @@
   overflow-wrap: anywhere;
 }
 
+.detail-row-tags {
+  align-items: center;
+}
+
+.tag-pill-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.tag-pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.5rem;
+  padding: 0.1rem 0.65rem;
+  border-radius: 999px;
+  border: 1px solid #c9f1f7;
+  background: #f2fdff;
+  color: #334155;
+  font-size: 0.78rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.tag-pill-empty {
+  border-color: #d6f3f8;
+  background: #f7feff;
+  color: #475569;
+}
+
 .detail-label {
   font-weight: 600;
   color: #475569;

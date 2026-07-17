@@ -28,7 +28,8 @@ const mockContacts: ContactDetail[] = [
     createdAt: '2026-01-10T08:30:00Z',
     modifiedAt: '2026-06-25T14:15:00Z',
     contactAddresses: [],
-    contactPhones: []
+    contactPhones: [],
+    contactSearchTags: []
   },
   {
     id: 2,
@@ -44,7 +45,8 @@ const mockContacts: ContactDetail[] = [
     createdAt: '2026-02-01T11:00:00Z',
     modifiedAt: '2026-06-20T09:45:00Z',
     contactAddresses: [],
-    contactPhones: []
+    contactPhones: [],
+    contactSearchTags: []
   }
 ];
 
@@ -93,7 +95,8 @@ export class MockBackendInterceptor implements HttpInterceptor {
             createdAt: now,
             modifiedAt: now,
             contactAddresses: body.contactAddresses ?? [],
-            contactPhones: body.contactPhones ?? []
+            contactPhones: body.contactPhones ?? [],
+            contactSearchTags: body.contactSearchTags ?? []
           };
           mockContacts.push(newContact);
           return of(new HttpResponse({ status: 201, body: newContact }));

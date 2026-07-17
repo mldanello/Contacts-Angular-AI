@@ -61,6 +61,14 @@ export class ContactsComponent {
     return JSON.stringify(this.communicationDraft()) !== JSON.stringify(this.communicationBaseline());
   });
 
+  displaySearchTags = computed(() => {
+    const tags = this.selectedContact().contactSearchTags ?? [];
+    return tags
+      .filter(tag => tag.isActive)
+      .map(tag => (tag.tagText ?? '').trim())
+      .filter(tagText => tagText.length > 0);
+  });
+
   addressDialogOpen = signal(false);
   addressDialogMode = signal<DialogMode>('add');
   addressDialogIndex = signal<number>(-1);
@@ -447,7 +455,8 @@ export class ContactsComponent {
       createdAt: now,
       modifiedAt: now,
       contactAddresses: [],
-      contactPhones: []
+      contactPhones: [],
+      contactSearchTags: []
     };
   }
 

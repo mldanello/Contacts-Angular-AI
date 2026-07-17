@@ -49,6 +49,18 @@
           <div class="detail-row"><span class="detail-label">Email</span><span>{{ selectedContact().email }}</span></div>
           <div class="detail-row"><span class="detail-label">Web</span><span>{{ selectedContact().web }}</span></div>
           <div class="detail-row"><span class="detail-label">Notes</span><span>{{ selectedContact().notes }}</span></div>
+          <div class="detail-row detail-row-tags">
+            <span class="detail-label">Search tags</span>
+            <span class="tag-pill-list">
+              @if (displaySearchTags().length === 0) {
+                <span class="tag-pill tag-pill-empty">No tags</span>
+              } @else {
+                @for (tagText of displaySearchTags(); track $index) {
+                  <span class="tag-pill">{{ tagText }}</span>
+                }
+              }
+            </span>
+          </div>
           <div class="detail-row"><span class="detail-label">Is active</span><span>{{ selectedContact().isActive ? 'Yes' : 'No' }}</span></div>
           <div class="detail-row"><span class="detail-label">Created at</span><span>{{ selectedContact().createdAt }}</span></div>
           <div class="detail-row"><span class="detail-label">Modified at</span><span>{{ selectedContact().modifiedAt }}</span></div>
