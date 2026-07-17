@@ -13,6 +13,8 @@ import { ApiService } from '../services/api.service';
 })
 export class ContactSearchTagAddComponent implements OnInit, OnChanges {
   private hostElement = inject(ElementRef<HTMLElement>);
+  private readonly initialSuggestionDelayMs = 700;
+  private warmupTimerId: number | null = null;
 
   @Input() contactId = 0;
   @Input() tags: ContactSearchTag[] = [];
@@ -23,11 +25,13 @@ export class ContactSearchTagAddComponent implements OnInit, OnChanges {
   suggestionWarning = '';
   suggestionsOpen = false;
   highlightedSuggestionIndex = -1;
+  loadingSuggestions = false;
+  hasLoadedSuggestions = false;
 
   constructor(private api: ApiService) {}
 
   ngOnInit(): void {
-    void this.loadAvailableSearchTags();
+    this.scheduleSuggestionWarmup();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -135,6 +139,10 @@ export class ContactSearchTagAddComponent implements OnInit, OnChanges {
   openSuggestions(): void {
     this.suggestionsOpen = true;
     this.highlightedSuggestionIndex = -1;
+
+    if (!this.hasLoadedSuggestions && !this.loadingSuggestions) {
+      void this.loadAvailableSearchTags();
+    }
   }
 
   handleInputKeydown(event: KeyboardEvent): void {
@@ -231,16 +239,35 @@ export class ContactSearchTagAddComponent implements OnInit, OnChanges {
   }
 
   private async loadAvailableSearchTags(): Promise<void> {
+    this.loadingSuggestions = true;
+
     try {
       const tags = await this.api.listSearchTags();
       this.availableSearchTags = tags;
       this.suggestionWarning = '';
+      this.hasLoadedSuggestions = true;
       this.ensureSuggestionsIncludeCurrentTags();
     } catch {
       this.availableSearchTags = [];
       this.suggestionWarning = 'Search tag suggestions are currently unavailable. You can still type a new tag.';
+      this.hasLoadedSuggestions = false;
       this.ensureSuggestionsIncludeCurrentTags();
+    } finally {
+      this.loadingSuggestions = false;
     }
+  }
+
+  private scheduleSuggestionWarmup(): void {
+    if (this.warmupTimerId !== null) {
+      window.clearTimeout(this.warmupTimerId);
+    }
+
+    this.warmupTimerId = window.setTimeout(() => {
+      this.warmupTimerId = null;
+      if (!this.hasLoadedSuggestions && !this.loadingSuggestions) {
+        void this.loadAvailableSearchTags();
+      }
+    }, this.initialSuggestionDelayMs);
   }
 
   private ensureSuggestionsIncludeCurrentTags(): void {

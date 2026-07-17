@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, retry, timeout, timer } from 'rxjs';
 import { AuthToken } from '../models/auth-token.model';
 import { ContactList } from '../models/contact-list.model';
 import { ContactDetail } from '../models/contact-detail.model';
@@ -11,6 +11,8 @@ import { environment } from '../../environments/environment';
 export class ApiService {
   private readonly baseUrl = environment.apiBaseUrl;
   private readonly searchTagsCacheTtlMs = 2 * 60 * 1000;
+  private readonly searchTagsRequestTimeoutMs = 1200;
+  private readonly searchTagsRetryDelayMs = 250;
   private searchTagsCache: { value: string[]; expiresAt: number } | null = null;
 
   constructor(private http: HttpClient) {}
@@ -133,7 +135,12 @@ export class ApiService {
 
     for (const url of urls) {
       try {
-        const response = await firstValueFrom(this.http.get<unknown>(url));
+        const response = await firstValueFrom(
+          this.http.get<unknown>(url).pipe(
+            timeout(this.searchTagsRequestTimeoutMs),
+            retry({ count: 1, delay: () => timer(this.searchTagsRetryDelayMs) })
+          )
+        );
         sawSuccessfulResponse = true;
         const tags = this.toDistinctSortedTags(this.extractSearchTagTexts(response));
         if (tags.length > 0) {
