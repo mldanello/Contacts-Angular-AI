@@ -3,7 +3,7 @@ import { HttpClient, HttpResponse } from '@angular/common/http';
 import { firstValueFrom, retry, timeout, timer } from 'rxjs';
 import { AuthToken } from '../models/auth-token.model';
 import { ContactList } from '../models/contact-list.model';
-import { ContactDetail } from '../models/contact-detail.model';
+import { ContactDetail, ContactSearchTag } from '../models/contact-detail.model';
 
 import { environment } from '../../environments/environment';
 
@@ -50,20 +50,21 @@ export class ApiService {
   }
 
   async addContact(contact: ContactDetail): Promise<ContactDetail> {
-    const saved = await firstValueFrom(this.http.post<ContactDetail>(this.contactsUrl, contact));
-    this.invalidateSearchTagsCache();
-    return saved;
+    const saved = await firstValueFrom(this.http.post<ContactDetail | null>(this.contactsUrl, contact));
+    const resolvedContact = saved ?? contact;
+    this.mergeSearchTagsIntoCache(resolvedContact.contactSearchTags ?? contact.contactSearchTags ?? []);
+    return resolvedContact;
   }
 
   async updateContact(contact: ContactDetail): Promise<ContactDetail> {
-    const saved = await firstValueFrom(this.http.put<ContactDetail>(`${this.contactsUrl}/${contact.id}`, contact));
-    this.invalidateSearchTagsCache();
-    return saved;
+    const saved = await firstValueFrom(this.http.put<ContactDetail | null>(`${this.contactsUrl}/${contact.id}`, contact));
+    const resolvedContact = saved ?? contact;
+    this.mergeSearchTagsIntoCache(resolvedContact.contactSearchTags ?? contact.contactSearchTags ?? []);
+    return resolvedContact;
   }
 
   async deleteContact(id: number): Promise<void> {
     await firstValueFrom(this.http.delete<void>(`${this.contactsUrl}/${id}`));
-    this.invalidateSearchTagsCache();
   }
 
   async listSearchTags(): Promise<string[]> {
@@ -104,8 +105,21 @@ export class ApiService {
     };
   }
 
-  private invalidateSearchTagsCache(): void {
-    this.searchTagsCache = null;
+  private mergeSearchTagsIntoCache(tags: ContactSearchTag[]): void {
+    const normalizedIncoming = this.toDistinctSortedTags(
+      tags
+        .filter(tag => tag.isActive)
+        .map(tag => (tag.tagText ?? '').trim())
+        .filter(tagText => tagText.length > 0)
+    );
+
+    if (normalizedIncoming.length === 0) {
+      return;
+    }
+
+    const existing = this.getValidSearchTagsCache() ?? [];
+    const merged = this.toDistinctSortedTags([...existing, ...normalizedIncoming]);
+    this.setSearchTagsCache(merged);
   }
 
   private async listSearchTagsFromContacts(): Promise<string[]> {
