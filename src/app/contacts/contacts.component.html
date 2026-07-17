@@ -151,13 +151,15 @@
             <textarea id="notes" name="notes" rows="6" [ngModel]="selectedContact().notes" (ngModelChange)="setSelectedContactField('notes', $event)"></textarea>
           </div>
 
-          <div class="input-group input-group-wide">
-            <label>Search tags</label>
-            <app-contact-search-tag-add
-              [contactId]="selectedContact().id"
-              [tags]="selectedContact().contactSearchTags"
-              (tagsChange)="setContactSearchTags($event)">
-            </app-contact-search-tag-add>
+          <div class="input-group input-group-wide search-tags-edit-group">
+            <label class="search-tags-edit-label">Search tags</label>
+            <div class="search-tags-edit-control">
+              <app-contact-search-tag-add
+                [contactId]="selectedContact().id"
+                [tags]="selectedContact().contactSearchTags"
+                (tagsChange)="setContactSearchTags($event)">
+              </app-contact-search-tag-add>
+            </div>
           </div>
 
           <div class="metadata-row input-group-wide">

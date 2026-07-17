@@ -300,6 +300,22 @@
   grid-column: 1 / -1;
 }
 
+.search-tags-edit-group {
+  display: grid;
+  grid-template-columns: 8rem minmax(0, 1fr);
+  gap: 0.75rem;
+  align-items: start;
+}
+
+.search-tags-edit-label {
+  margin-top: 0.28rem;
+}
+
+.search-tags-edit-control {
+  min-width: 0;
+  max-width: 31rem;
+}
+
 .contact-id-row {
   display: flex;
   justify-content: flex-start;
