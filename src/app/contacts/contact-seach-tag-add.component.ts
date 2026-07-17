@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ContactSearchTag } from '../models/contact-detail.model';
 import { ApiService } from '../services/api.service';
@@ -12,6 +12,8 @@ import { ApiService } from '../services/api.service';
   styleUrls: ['./contact-seach-tag-add.component.css']
 })
 export class ContactSearchTagAddComponent implements OnInit, OnChanges {
+  private hostElement = inject(ElementRef<HTMLElement>);
+
   @Input() contactId = 0;
   @Input() tags: ContactSearchTag[] = [];
   @Output() tagsChange = new EventEmitter<ContactSearchTag[]>();
@@ -19,6 +21,8 @@ export class ContactSearchTagAddComponent implements OnInit, OnChanges {
   availableSearchTags: string[] = [];
   entryText = '';
   suggestionWarning = '';
+  suggestionsOpen = false;
+  highlightedSuggestionIndex = -1;
 
   constructor(private api: ApiService) {}
 
@@ -46,6 +50,30 @@ export class ContactSearchTagAddComponent implements OnInit, OnChanges {
       }))
       .filter(tag => tag.isActive && tag.text.length > 0)
       .map(tag => ({ index: tag.index, text: tag.text }));
+  }
+
+  get filteredSuggestions(): string[] {
+    const query = this.entryText.trim().toLowerCase();
+    const activeTagKeys = new Set(
+      this.activeTags.map(tag => tag.text.toLowerCase())
+    );
+
+    return this.availableSearchTags.filter(tag => {
+      const normalized = tag.toLowerCase();
+      if (activeTagKeys.has(normalized)) {
+        return false;
+      }
+
+      return query.length === 0 || normalized.includes(query);
+    });
+  }
+
+  get activeDescendantId(): string | null {
+    if (!this.suggestionsOpen || this.highlightedSuggestionIndex < 0 || this.highlightedSuggestionIndex >= this.filteredSuggestions.length) {
+      return null;
+    }
+
+    return this.getSuggestionId(this.highlightedSuggestionIndex);
   }
 
   addTag(): void {
@@ -100,6 +128,85 @@ export class ContactSearchTagAddComponent implements OnInit, OnChanges {
 
   clearEntryText(): void {
     this.entryText = '';
+    this.suggestionsOpen = true;
+    this.highlightedSuggestionIndex = -1;
+  }
+
+  openSuggestions(): void {
+    this.suggestionsOpen = true;
+    this.highlightedSuggestionIndex = -1;
+  }
+
+  handleInputKeydown(event: KeyboardEvent): void {
+    const suggestions = this.filteredSuggestions;
+
+    if (event.key === 'ArrowDown') {
+      event.preventDefault();
+      if (!this.suggestionsOpen) {
+        this.suggestionsOpen = true;
+      }
+
+      if (suggestions.length === 0) {
+        this.highlightedSuggestionIndex = -1;
+        return;
+      }
+
+      this.highlightedSuggestionIndex = (this.highlightedSuggestionIndex + 1 + suggestions.length) % suggestions.length;
+      return;
+    }
+
+    if (event.key === 'ArrowUp') {
+      event.preventDefault();
+      if (!this.suggestionsOpen) {
+        this.suggestionsOpen = true;
+      }
+
+      if (suggestions.length === 0) {
+        this.highlightedSuggestionIndex = -1;
+        return;
+      }
+
+      this.highlightedSuggestionIndex = this.highlightedSuggestionIndex <= 0
+        ? suggestions.length - 1
+        : this.highlightedSuggestionIndex - 1;
+      return;
+    }
+
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      if (this.suggestionsOpen && this.highlightedSuggestionIndex >= 0 && this.highlightedSuggestionIndex < suggestions.length) {
+        this.selectSuggestion(suggestions[this.highlightedSuggestionIndex]);
+        return;
+      }
+
+      this.addTag();
+      return;
+    }
+
+    if (event.key === 'Escape') {
+      this.suggestionsOpen = false;
+      this.highlightedSuggestionIndex = -1;
+    }
+  }
+
+  handleFocusOut(): void {
+    queueMicrotask(() => {
+      const activeElement = document.activeElement;
+      if (!activeElement || !this.hostElement.nativeElement.contains(activeElement)) {
+        this.suggestionsOpen = false;
+        this.highlightedSuggestionIndex = -1;
+      }
+    });
+  }
+
+  selectSuggestion(tag: string): void {
+    this.entryText = tag;
+    this.suggestionsOpen = false;
+    this.highlightedSuggestionIndex = -1;
+  }
+
+  isSuggestionHighlighted(index: number): boolean {
+    return this.highlightedSuggestionIndex === index;
   }
 
   removeTagAt(index: number): void {
@@ -163,5 +270,9 @@ export class ContactSearchTagAddComponent implements OnInit, OnChanges {
         a.localeCompare(b, undefined, { sensitivity: 'base' })
       );
     }
+  }
+
+  private getSuggestionId(index: number): string {
+    return `contact-search-tag-option-${index}`;
   }
 }

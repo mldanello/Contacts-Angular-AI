@@ -1,14 +1,21 @@
 <div class="search-tag-add-control">
   <div class="search-tag-add-row">
-    <div class="search-tag-input-wrap">
+    <div class="search-tag-input-wrap" (focusout)="handleFocusOut()">
       <input
         type="text"
         [(ngModel)]="entryText"
         [ngModelOptions]="{ standalone: true }"
-        list="contact-search-tag-options"
         placeholder="Type or select a search tag"
         aria-label="Add search tag"
-        (keydown.enter)="$event.preventDefault(); addTag()" />
+        autocomplete="off"
+        role="combobox"
+        aria-autocomplete="list"
+        [attr.aria-expanded]="suggestionsOpen"
+        aria-controls="contact-search-tag-dropdown"
+        [attr.aria-activedescendant]="activeDescendantId"
+        (focus)="openSuggestions()"
+        (input)="openSuggestions()"
+        (keydown)="handleInputKeydown($event)" />
       @if (entryText.trim()) {
         <button
           type="button"
@@ -19,15 +26,31 @@
           X
         </button>
       }
+
+      @if (suggestionsOpen) {
+        <div id="contact-search-tag-dropdown" class="search-tag-dropdown" role="listbox" aria-label="Available search tags">
+          @if (filteredSuggestions.length === 0) {
+            <div class="search-tag-dropdown-empty">No matching tags</div>
+          } @else {
+            @for (tag of filteredSuggestions; track $index) {
+              <button
+                type="button"
+                class="search-tag-dropdown-option"
+                [class.highlighted]="isSuggestionHighlighted($index)"
+                [id]="'contact-search-tag-option-' + $index"
+                role="option"
+                [attr.aria-selected]="isSuggestionHighlighted($index)"
+                (mousedown)="$event.preventDefault()"
+                (click)="selectSuggestion(tag)">
+                {{ tag }}
+              </button>
+            }
+          }
+        </div>
+      }
     </div>
     <button type="button" class="secondary" (click)="addTag()" [disabled]="!entryText.trim()">Add tag</button>
   </div>
-
-  <datalist id="contact-search-tag-options">
-    @for (tag of availableSearchTags; track $index) {
-      <option [value]="tag"></option>
-    }
-  </datalist>
 
   @if (suggestionWarning) {
     <p class="search-tag-warning">{{ suggestionWarning }}</p>
