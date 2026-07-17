@@ -8,7 +8,7 @@ import { environment } from '../../environments/environment';
 import { ApiService } from '../services/api.service';
 import { AuthService } from '../services/auth.service';
 import { ContactList } from '../models/contact-list.model';
-import { ContactAddress, ContactDetail, ContactPhone } from '../models/contact-detail.model';
+import { ContactAddress, ContactDetail, ContactPhone, ContactSearchTag } from '../models/contact-detail.model';
 
 type EditTab = 'profile' | 'communication';
 type CommunicationStoreKey = number | 'new';
@@ -67,6 +67,17 @@ export class ContactsComponent {
       .filter(tag => tag.isActive)
       .map(tag => (tag.tagText ?? '').trim())
       .filter(tagText => tagText.length > 0);
+  });
+
+  editSearchTagPills = computed(() => {
+    const tags = this.selectedContact().contactSearchTags ?? [];
+    return tags
+      .map((tag, index) => ({
+        index,
+        isActive: tag.isActive,
+        text: (tag.tagText ?? '').trim()
+      }))
+      .filter(tag => tag.isActive && tag.text.length > 0);
   });
 
   addressDialogOpen = signal(false);
@@ -212,6 +223,33 @@ export class ContactsComponent {
 
   setSelectedContactIsActive(value: boolean): void {
     this.selectedContact.update(contact => ({ ...contact, isActive: value }));
+  }
+
+  removeSearchTagAt(index: number): void {
+    this.selectedContact.update(contact => {
+      const tags = contact.contactSearchTags ?? [];
+      if (index < 0 || index >= tags.length) {
+        return contact;
+      }
+
+      const now = new Date().toISOString();
+      const updatedTags = tags.map((tag, tagIndex) => {
+        if (tagIndex !== index) {
+          return tag;
+        }
+
+        return {
+          ...tag,
+          isActive: false,
+          modifiedAt: now
+        };
+      });
+
+      return {
+        ...contact,
+        contactSearchTags: updatedTags
+      };
+    });
   }
 
   async saveContact(): Promise<void> {
@@ -597,7 +635,17 @@ export class ContactsComponent {
       email: contact.email,
       web: contact.web,
       notes: contact.notes,
-      isActive: contact.isActive
+      isActive: contact.isActive,
+      contactSearchTags: this.toComparableSearchTags(contact.contactSearchTags ?? [])
     };
+  }
+
+  private toComparableSearchTags(tags: ContactSearchTag[]) {
+    return tags.map(tag => ({
+      id: tag.id,
+      contactId: tag.contactId,
+      tagText: tag.tagText,
+      isActive: tag.isActive
+    }));
   }
 }

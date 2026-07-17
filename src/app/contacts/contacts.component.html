@@ -151,6 +151,29 @@
             <textarea id="notes" name="notes" rows="6" [ngModel]="selectedContact().notes" (ngModelChange)="setSelectedContactField('notes', $event)"></textarea>
           </div>
 
+          <div class="input-group input-group-wide">
+            <label>Search tags</label>
+            <div class="tag-pill-list tag-pill-list-edit">
+              @if (editSearchTagPills().length === 0) {
+                <span class="tag-pill tag-pill-empty">No tags</span>
+              } @else {
+                @for (tag of editSearchTagPills(); track tag.index) {
+                  <span class="tag-pill tag-pill-removable">
+                    <span>{{ tag.text }}</span>
+                    <button
+                      type="button"
+                      class="tag-pill-remove"
+                      (click)="removeSearchTagAt(tag.index)"
+                      [attr.aria-label]="'Remove search tag ' + tag.text"
+                      [title]="'Remove ' + tag.text">
+                      X
+                    </button>
+                  </span>
+                }
+              }
+            </div>
+          </div>
+
           <div class="metadata-row input-group-wide">
             <div class="input-group meta-field meta-checkbox-field">
               <label for="isActive">Is active</label>
