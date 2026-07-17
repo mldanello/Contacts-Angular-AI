@@ -39,6 +39,7 @@ export class ContactsComponent {
   message = signal('');
   error = signal('');
   loading = signal(false);
+  saving = signal(false);
   loadingDetail = signal(false);
   showResponsiveDebug = signal(false);
   allowResponsiveDebug = !environment.production;
@@ -223,9 +224,14 @@ export class ContactsComponent {
   }
 
   async saveContact(): Promise<void> {
+    if (this.saving()) {
+      return;
+    }
+
     this.error.set('');
     this.message.set('');
     this.loading.set(true);
+    this.saving.set(true);
 
     const contact = this.selectedContact();
     const communicationSnapshot = this.cloneCommunication(this.communicationDraft());
@@ -255,6 +261,7 @@ export class ContactsComponent {
     } catch {
       this.error.set('Unable to save contact.');
     } finally {
+      this.saving.set(false);
       this.loading.set(false);
     }
   }

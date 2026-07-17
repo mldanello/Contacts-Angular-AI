@@ -76,7 +76,8 @@
           </button>
         </div>
       } @else if (!loadingDetail()) {
-        <form #contactForm="ngForm" (ngSubmit)="saveContact()">
+        <form #contactForm="ngForm" (ngSubmit)="saveContact()" [attr.aria-busy]="saving()">
+          <fieldset class="contact-edit-fieldset" [disabled]="saving()">
           <div class="contact-id-row input-group-wide" aria-label="Contact identifier">
             <span class="contact-id-pill">
               {{ selectedContact().id > 0 ? ('ID ' + selectedContact().id) : 'New Contact' }}
@@ -341,9 +342,14 @@
           }
 
           <div class="actions detail-actions">
-            <button class="primary" type="submit" [disabled]="contactForm.invalid">
-              <mat-icon svgIcon="contact-save"></mat-icon>
-              Save
+            <button class="primary" type="submit" [disabled]="saving() || contactForm.invalid">
+              @if (saving()) {
+                <span class="button-spinner" aria-hidden="true"></span>
+                Saving...
+              } @else {
+                <mat-icon svgIcon="contact-save"></mat-icon>
+                Save
+              }
             </button>
             <button class="secondary" type="button" (click)="cancelEdit()">
               <mat-icon svgIcon="contact-cancel"></mat-icon>
@@ -360,6 +366,7 @@
               </button>
             }
           </div>
+          </fieldset>
         </form>
       }
 
