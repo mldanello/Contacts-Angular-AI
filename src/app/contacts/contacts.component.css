@@ -309,6 +309,14 @@
   grid-column: 1 / -1;
 }
 
+.contact-edit-fieldset > .actions,
+.contact-edit-fieldset > .info-message,
+.contact-edit-fieldset > .error-message,
+.contact-edit-fieldset > .input-group-wide,
+.contact-edit-fieldset > .tab-panel {
+  grid-column: 1 / -1;
+}
+
 .contact-detail form .input-group-wide {
   grid-column: 1 / -1;
 }
