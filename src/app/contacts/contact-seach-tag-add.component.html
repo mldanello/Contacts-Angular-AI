@@ -1,0 +1,43 @@
+<div class="search-tag-add-control">
+  <div class="search-tag-add-row">
+    <input
+      type="text"
+      [(ngModel)]="entryText"
+      [ngModelOptions]="{ standalone: true }"
+      list="contact-search-tag-options"
+      placeholder="Type or select a search tag"
+      aria-label="Add search tag"
+      (keydown.enter)="$event.preventDefault(); addTag()" />
+    <button type="button" class="secondary" (click)="addTag()" [disabled]="!entryText.trim()">Add tag</button>
+  </div>
+
+  <datalist id="contact-search-tag-options">
+    @for (tag of availableSearchTags; track $index) {
+      <option [value]="tag"></option>
+    }
+  </datalist>
+
+  @if (suggestionWarning) {
+    <p class="search-tag-warning">{{ suggestionWarning }}</p>
+  }
+
+  <div class="tag-pill-list tag-pill-list-edit">
+    @if (activeTags.length === 0) {
+      <span class="tag-pill tag-pill-empty">No tags</span>
+    } @else {
+      @for (tag of activeTags; track tag.index) {
+        <span class="tag-pill tag-pill-removable">
+          <span>{{ tag.text }}</span>
+          <button
+            type="button"
+            class="tag-pill-remove"
+            (click)="removeTagAt(tag.index)"
+            [attr.aria-label]="'Remove search tag ' + tag.text"
+            [title]="'Remove ' + tag.text">
+            X
+          </button>
+        </span>
+      }
+    }
+  </div>
+</div>

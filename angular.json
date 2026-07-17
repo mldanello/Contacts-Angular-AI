@@ -45,7 +45,8 @@
         "serve": {
           "builder": "@angular/build:dev-server",
           "options": {
-            "buildTarget": "angular-ai-contacts:build"
+            "buildTarget": "angular-ai-contacts:build",
+            "proxyConfig": "proxy.conf.json"
           }
         },
         "test": {
