@@ -1,13 +1,25 @@
 <div class="search-tag-add-control">
   <div class="search-tag-add-row">
-    <input
-      type="text"
-      [(ngModel)]="entryText"
-      [ngModelOptions]="{ standalone: true }"
-      list="contact-search-tag-options"
-      placeholder="Type or select a search tag"
-      aria-label="Add search tag"
-      (keydown.enter)="$event.preventDefault(); addTag()" />
+    <div class="search-tag-input-wrap">
+      <input
+        type="text"
+        [(ngModel)]="entryText"
+        [ngModelOptions]="{ standalone: true }"
+        list="contact-search-tag-options"
+        placeholder="Type or select a search tag"
+        aria-label="Add search tag"
+        (keydown.enter)="$event.preventDefault(); addTag()" />
+      @if (entryText.trim()) {
+        <button
+          type="button"
+          class="search-tag-input-clear"
+          (click)="clearEntryText()"
+          aria-label="Clear search tag text"
+          title="Clear">
+          X
+        </button>
+      }
+    </div>
     <button type="button" class="secondary" (click)="addTag()" [disabled]="!entryText.trim()">Add tag</button>
   </div>
 

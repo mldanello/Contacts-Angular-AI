@@ -14,8 +14,41 @@
   align-items: center;
 }
 
+.search-tag-input-wrap {
+  position: relative;
+  min-width: 0;
+}
+
 .search-tag-add-row input {
   min-width: 0;
+  width: 100%;
+  padding-right: 2rem;
+}
+
+.search-tag-input-clear {
+  position: absolute;
+  top: 50%;
+  right: 0.45rem;
+  transform: translateY(-50%);
+  width: 1.2rem;
+  height: 1.2rem;
+  padding: 0;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: #64748b;
+  font-size: 0.72rem;
+  line-height: 1;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-tag-input-clear:hover {
+  background: #e2e8f0;
+  color: #334155;
 }
 
 .search-tag-warning {

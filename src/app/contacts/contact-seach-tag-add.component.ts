@@ -98,6 +98,10 @@ export class ContactSearchTagAddComponent implements OnInit, OnChanges {
     this.entryText = '';
   }
 
+  clearEntryText(): void {
+    this.entryText = '';
+  }
+
   removeTagAt(index: number): void {
     if (index < 0 || index >= this.tags.length) {
       return;
