@@ -64,7 +64,8 @@ export class MockBackendInterceptor implements HttpInterceptor {
           const listItems: ContactList[] = mockContacts.map(({ id, firstName, lastName }) => ({
             id,
             firstName,
-            lastName
+            lastName,
+            searchTags: []
           }));
           return of(new HttpResponse({ status: 200, body: listItems }));
         }

@@ -42,7 +42,8 @@ export class ApiService {
   }
 
   async listContacts(): Promise<ContactList[]> {
-    return firstValueFrom(this.http.get<ContactList[]>(this.contactsUrl));
+    const payload = await firstValueFrom(this.http.get<unknown>(this.contactsUrl));
+    return this.toContactList(payload);
   }
 
   async getContact(id: number): Promise<ContactDetail> {
@@ -280,6 +281,47 @@ export class ApiService {
       maybeWrapped.$values ??
       payload
     );
+  }
+
+  private toContactList(payload: unknown): ContactList[] {
+    const root = this.unwrapCollectionPayload(payload);
+    if (!Array.isArray(root)) {
+      return [];
+    }
+
+    return root
+      .filter((item): item is Record<string, unknown> => !!item && typeof item === 'object')
+      .map(item => {
+        const id = Number(item['id'] ?? 0);
+        const firstName = String(item['firstName'] ?? '');
+        const lastName = String(item['lastName'] ?? '');
+        const rawSearchTags = item['searchTags'];
+
+        return {
+          id,
+          firstName,
+          lastName,
+          searchTags: this.toStringList(rawSearchTags)
+        };
+      });
+  }
+
+  private toStringList(value: unknown): string[] {
+    if (Array.isArray(value)) {
+      return value
+        .filter((item): item is string => typeof item === 'string')
+        .map(item => item.trim())
+        .filter(item => item.length > 0);
+    }
+
+    if (typeof value === 'string') {
+      return value
+        .split(',')
+        .map(item => item.trim())
+        .filter(item => item.length > 0);
+    }
+
+    return [];
   }
 
   async checkApiReachability(): Promise<boolean> {

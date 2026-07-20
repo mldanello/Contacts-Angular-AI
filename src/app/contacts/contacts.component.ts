@@ -479,7 +479,8 @@ export class ContactsComponent {
     return {
       id: contact.id,
       firstName: contact.firstName,
-      lastName: contact.lastName
+      lastName: contact.lastName,
+      searchTags: []
     };
   }
 
