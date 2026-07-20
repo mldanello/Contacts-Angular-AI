@@ -17,7 +17,7 @@
           </button>
           <button class="secondary new-contact-button" type="button" (click)="createNewContact()">
             <mat-icon svgIcon="contact-new"></mat-icon>
-            New
+            Add
           </button>
         </div>
       </div>
@@ -215,7 +215,10 @@
             <section class="comm-section">
               <div class="comm-section-header">
                 <h3>Addresses</h3>
-                <button type="button" class="secondary" (click)="openAddAddressDialog()">Add Address</button>
+                <button type="button" class="secondary" (click)="openAddAddressDialog()">
+                  <mat-icon svgIcon="contact-new"></mat-icon>
+                  Add
+                </button>
               </div>
               @if (communicationDraft().addresses.length === 0) {
                 <p class="comm-empty">No addresses yet.</p>
@@ -251,7 +254,10 @@
             <section class="comm-section">
               <div class="comm-section-header">
                 <h3>Phone Numbers</h3>
-                <button type="button" class="secondary" (click)="openAddPhoneDialog()">Add Phone</button>
+                <button type="button" class="secondary" (click)="openAddPhoneDialog()">
+                  <mat-icon svgIcon="contact-new"></mat-icon>
+                  Add
+                </button>
               </div>
               @if (communicationDraft().phones.length === 0) {
                 <p class="comm-empty">No phone numbers yet.</p>
