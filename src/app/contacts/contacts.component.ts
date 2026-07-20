@@ -29,6 +29,8 @@ type DialogMode = 'add' | 'edit';
   styleUrls: ['./contacts.component.css']
 })
 export class ContactsComponent {
+  private readonly listTagDisplayLimit = 4;
+
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private authService = inject(AuthService);
@@ -41,6 +43,7 @@ export class ContactsComponent {
   loading = signal(false);
   saving = signal(false);
   loadingDetail = signal(false);
+  showListSearchTags = signal(false);
   showResponsiveDebug = signal(false);
   allowResponsiveDebug = !environment.production;
 
@@ -139,6 +142,10 @@ export class ContactsComponent {
     this.error.set('');
   }
 
+  toggleListSearchTags(): void {
+    this.showListSearchTags.update(value => !value);
+  }
+
   private async loadContactDetail(id: number): Promise<void> {
     this.loadingDetail.set(true);
     this.error.set('');
@@ -221,6 +228,14 @@ export class ContactsComponent {
       ...contact,
       contactSearchTags: tags.map(tag => ({ ...tag }))
     }));
+  }
+
+  getVisibleListTags(contact: ContactList): string[] {
+    return contact.searchTags.slice(0, this.listTagDisplayLimit);
+  }
+
+  getHiddenListTagCount(contact: ContactList): number {
+    return Math.max(contact.searchTags.length - this.listTagDisplayLimit, 0);
   }
 
   async saveContact(): Promise<void> {

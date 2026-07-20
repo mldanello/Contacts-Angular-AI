@@ -6,16 +6,38 @@
     <div class="contacts-panel">
       <div class="actions panel-header">
         <h2>Contacts</h2>
-        <button class="secondary new-contact-button" type="button" (click)="createNewContact()">
-          <mat-icon svgIcon="contact-new"></mat-icon>
-          New
-        </button>
+        <div class="panel-header-actions">
+          <button
+            class="secondary tags-toggle-button"
+            type="button"
+            [class.active]="showListSearchTags()"
+            [attr.aria-pressed]="showListSearchTags()"
+            (click)="toggleListSearchTags()">
+            Tags...
+          </button>
+          <button class="secondary new-contact-button" type="button" (click)="createNewContact()">
+            <mat-icon svgIcon="contact-new"></mat-icon>
+            New
+          </button>
+        </div>
       </div>
       <div class="contact-list-scroll">
         <div class="contact-list">
         @for (contact of contacts(); track contact.id) {
           <div class="contact-item" [class.selected]="selectedContactId() === contact.id" (click)="selectContact(contact)">
-            <span class="contact-name">{{ contact.firstName }} {{ contact.lastName }}</span>
+            <div class="contact-main">
+              <span class="contact-name">{{ contact.firstName }} {{ contact.lastName }}</span>
+              @if (showListSearchTags() && contact.searchTags.length > 0) {
+                <div class="contact-tags" aria-label="Search tags">
+                  @for (tagText of getVisibleListTags(contact); track $index) {
+                    <span class="contact-tag-pill">{{ tagText }}</span>
+                  }
+                  @if (getHiddenListTagCount(contact) > 0) {
+                    <span class="contact-tag-pill contact-tag-pill-overflow">+{{ getHiddenListTagCount(contact) }}</span>
+                  }
+                </div>
+              }
+            </div>
             <div class="contact-actions">
               <button type="button" class="secondary icon-button" (click)="$event.stopPropagation(); selectContact(contact, true)" aria-label="Edit contact" title="Edit">
                 <mat-icon svgIcon="contact-edit"></mat-icon>
