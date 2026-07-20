@@ -33,14 +33,35 @@
   padding-right: 2rem;
 }
 
-.search-tag-add-row > button.secondary {
-  min-height: 1.8rem;
-  padding: 0.28rem 0.82rem;
-  font-size: 0.8rem;
+.search-tag-add-row > button.tag-add-button {
+  min-height: 1.12rem;
+  height: 1.12rem;
+  padding: 0 0.5rem;
+  border-radius: 999px;
+  border: 1px solid #8fc8d4;
+  background: linear-gradient(180deg, #e8fafe 0%, #d7f0f6 100%);
+  color: #1f4b5a;
+  font-size: 0.64rem;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  box-shadow: 0 4px 10px rgba(14, 116, 144, 0.16), 0 1px 0 rgba(255, 255, 255, 0.78) inset;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 0.24rem;
   margin-top: 0;
+}
+
+.search-tag-add-row > button.tag-add-button:hover {
+  background: linear-gradient(180deg, #ddf5fb 0%, #caeaf2 100%);
+  border-color: #79b7c5;
+  box-shadow: 0 6px 14px rgba(14, 116, 144, 0.2), 0 1px 0 rgba(255, 255, 255, 0.68) inset;
+}
+
+.search-tag-add-row > button.tag-add-button mat-icon {
+  width: 0.78rem;
+  height: 0.78rem;
 }
 
 .search-tag-input-clear {

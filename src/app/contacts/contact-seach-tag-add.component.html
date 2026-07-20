@@ -54,7 +54,10 @@
         </div>
       }
     </div>
-    <button type="button" class="secondary" (click)="addTag()" [disabled]="!entryText.trim()">Add tag</button>
+    <button type="button" class="secondary action-chip-button tag-add-button" (click)="addTag()" [disabled]="!entryText.trim()">
+      <mat-icon svgIcon="contact-new"></mat-icon>
+      Add
+    </button>
   </div>
 
   @if (suggestionWarning) {

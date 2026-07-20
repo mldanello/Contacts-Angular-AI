@@ -185,10 +185,10 @@
             </div>
           </div>
 
-          <div class="metadata-row input-group-wide">
-            <div class="input-group meta-field meta-checkbox-field">
-              <label for="isActive">Is active</label>
-              <label class="checkbox-inline" for="isActive">
+          <div class="metadata-row input-group-wide" aria-label="Contact metadata">
+            <div class="metadata-inline-item metadata-inline-item-active">
+              <label class="metadata-inline-label" for="isActive">Is active</label>
+              <label class="checkbox-inline metadata-inline-control" for="isActive">
                 <input
                   id="isActive"
                   name="isActive"
@@ -199,14 +199,26 @@
               </label>
             </div>
 
-            <div class="input-group meta-field">
-              <label for="createdAt">Created at</label>
-              <input id="createdAt" name="createdAt" [ngModel]="selectedContact().createdAt" readonly tabindex="-1" />
+            <div class="metadata-inline-item metadata-inline-item-date">
+              <label class="metadata-inline-label" for="createdAt">Created at</label>
+              <input
+                class="metadata-date-input"
+                id="createdAt"
+                name="createdAt"
+                [ngModel]="selectedContact().createdAt"
+                readonly
+                tabindex="-1" />
             </div>
 
-            <div class="input-group meta-field">
-              <label for="modifiedAt">Modified at</label>
-              <input id="modifiedAt" name="modifiedAt" [ngModel]="selectedContact().modifiedAt" readonly tabindex="-1" />
+            <div class="metadata-inline-item metadata-inline-item-date">
+              <label class="metadata-inline-label" for="modifiedAt">Modified at</label>
+              <input
+                class="metadata-date-input"
+                id="modifiedAt"
+                name="modifiedAt"
+                [ngModel]="selectedContact().modifiedAt"
+                readonly
+                tabindex="-1" />
             </div>
           </div>
           </div>
