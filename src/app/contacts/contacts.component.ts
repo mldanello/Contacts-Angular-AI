@@ -495,7 +495,10 @@ export class ContactsComponent {
       id: contact.id,
       firstName: contact.firstName,
       lastName: contact.lastName,
-      searchTags: []
+      searchTags: (contact.contactSearchTags ?? [])
+        .filter(tag => tag.isActive)
+        .map(tag => (tag.tagText ?? '').trim())
+        .filter(tagText => tagText.length > 0)
     };
   }
 
