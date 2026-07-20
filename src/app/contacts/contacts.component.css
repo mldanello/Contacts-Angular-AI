@@ -812,6 +812,51 @@ button.danger:hover {
   transform: translateY(-1px);
 }
 
+.panel-header-actions button.action-chip-button,
+.comm-section-header button.action-chip-button {
+  height: 1.12rem;
+  padding: 0 0.5rem;
+  border-radius: 999px;
+  border-color: #8fc8d4;
+  background: linear-gradient(180deg, #e8fafe 0%, #d7f0f6 100%);
+  color: #1f4b5a;
+  font-size: 0.64rem;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  box-shadow: 0 4px 10px rgba(14, 116, 144, 0.16), 0 1px 0 rgba(255, 255, 255, 0.78) inset;
+  transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.panel-header-actions button.action-chip-button:hover,
+.comm-section-header button.action-chip-button:hover {
+  background: linear-gradient(180deg, #ddf5fb 0%, #caeaf2 100%);
+  border-color: #79b7c5;
+  box-shadow: 0 6px 14px rgba(14, 116, 144, 0.2), 0 1px 0 rgba(255, 255, 255, 0.68) inset;
+}
+
+.panel-header-actions button.tags-toggle-button.active {
+  background: linear-gradient(180deg, #c7e7ef 0%, #b2d9e4 100%);
+  border-color: #6fa8b6;
+  color: #173947;
+  box-shadow: inset 0 2px 5px rgba(15, 23, 42, 0.2), 0 1px 0 rgba(255, 255, 255, 0.46);
+  transform: translateY(1px);
+}
+
+.panel-header-actions button.new-contact-button {
+  width: 6.9rem;
+}
+
+.panel-header-actions button.tags-toggle-button {
+  width: 4.7rem;
+}
+
+.panel-header-actions button.new-contact-button mat-icon,
+.comm-section-header button.action-chip-button mat-icon {
+  width: 0.78rem;
+  height: 0.78rem;
+}
+
 
 mat-icon {
   width: 1rem;
@@ -948,12 +993,12 @@ button:disabled {
     justify-content: center;
   }
 
-  .new-contact-button {
-    width: 6.6rem;
+  .panel-header-actions button.new-contact-button {
+    width: 6.25rem;
   }
 
-  .tags-toggle-button {
-    width: 5.2rem;
+  .panel-header-actions button.tags-toggle-button {
+    width: 4.25rem;
   }
 
   .metadata-row {

@@ -8,14 +8,14 @@
         <h2>Contacts</h2>
         <div class="panel-header-actions">
           <button
-            class="secondary tags-toggle-button"
+            class="secondary tags-toggle-button action-chip-button"
             type="button"
             [class.active]="showListSearchTags()"
             [attr.aria-pressed]="showListSearchTags()"
             (click)="toggleListSearchTags()">
-            Tags...
+            Tags
           </button>
-          <button class="secondary new-contact-button" type="button" (click)="createNewContact()">
+          <button class="secondary new-contact-button action-chip-button" type="button" (click)="createNewContact()">
             <mat-icon svgIcon="contact-new"></mat-icon>
             Add
           </button>
@@ -215,7 +215,7 @@
             <section class="comm-section">
               <div class="comm-section-header">
                 <h3>Addresses</h3>
-                <button type="button" class="secondary" (click)="openAddAddressDialog()">
+                <button type="button" class="secondary action-chip-button" (click)="openAddAddressDialog()">
                   <mat-icon svgIcon="contact-new"></mat-icon>
                   Add
                 </button>
@@ -254,7 +254,7 @@
             <section class="comm-section">
               <div class="comm-section-header">
                 <h3>Phone Numbers</h3>
-                <button type="button" class="secondary" (click)="openAddPhoneDialog()">
+                <button type="button" class="secondary action-chip-button" (click)="openAddPhoneDialog()">
                   <mat-icon svgIcon="contact-new"></mat-icon>
                   Add
                 </button>
