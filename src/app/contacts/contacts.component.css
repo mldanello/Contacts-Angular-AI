@@ -99,7 +99,7 @@
 }
 
 button.new-contact-button {
-  width: 7.5rem;
+  width: 5.95rem;
   height: 1.18rem;
   padding: 0 0.56rem;
   font-size: 0.66rem;
@@ -865,7 +865,7 @@ button.danger:hover {
 }
 
 .panel-header-actions button.new-contact-button {
-  width: 6.9rem;
+  width: 4.7rem;
 }
 
 .panel-header-actions button.tags-toggle-button {
@@ -1020,7 +1020,7 @@ button:disabled {
   }
 
   .panel-header-actions button.new-contact-button {
-    width: 6.25rem;
+    width: 4.25rem;
   }
 
   .panel-header-actions button.tags-toggle-button {
@@ -1135,8 +1135,8 @@ button:disabled {
   }
 
   .panel-header .new-contact-button {
-    width: auto;
-    min-width: 7.8rem;
+    width: 4.7rem;
+    min-width: 0;
   }
 
   .input-group textarea {

@@ -13,7 +13,7 @@
             [class.active]="showListSearchTags()"
             [attr.aria-pressed]="showListSearchTags()"
             (click)="toggleListSearchTags()">
-            Tags
+            {{ showListSearchTags() ? 'Hide Tags' : 'Show Tags' }}
           </button>
           <button class="secondary new-contact-button action-chip-button" type="button" (click)="createNewContact()">
             <mat-icon svgIcon="contact-new"></mat-icon>
