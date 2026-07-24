@@ -21,9 +21,39 @@
           </button>
         </div>
       </div>
+      <div class="contacts-filter" aria-label="Contact list filter controls">
+        <label for="contactListFilter" class="contacts-filter-label">Filter:</label>
+        <div class="contacts-filter-input-wrap">
+          <input
+            id="contactListFilter"
+            name="contactListFilter"
+            type="text"
+            [ngModel]="listFilterDraft()"
+            (ngModelChange)="setListFilterDraft($event)"
+            placeholder="enter filter criteria ..."
+            (keyup.enter)="applyListFilter()"
+            aria-label="Filter contacts" />
+          <button
+            type="button"
+            class="secondary action-chip-button contacts-filter-chip-button contacts-filter-clear"
+            (click)="clearListFilterDraft()"
+            [disabled]="!listFilterDraft().trim()"
+            aria-label="Clear filter text"
+            title="Clear filter">
+            X
+          </button>
+        </div>
+        <button
+          type="button"
+          class="secondary action-chip-button contacts-filter-chip-button contacts-filter-apply"
+          (click)="applyListFilter()"
+          aria-label="Apply filter">
+          Apply
+        </button>
+      </div>
       <div class="contact-list-scroll">
         <div class="contact-list">
-        @for (contact of contacts(); track contact.id) {
+        @for (contact of filteredContacts(); track contact.id) {
           <div class="contact-item" [class.selected]="selectedContactId() === contact.id" (click)="selectContact(contact)">
             <div class="contact-main">
               <span class="contact-name">{{ contact.firstName }} {{ contact.lastName }}</span>
@@ -47,6 +77,9 @@
               </button>
             </div>
           </div>
+        }
+        @if (filteredContacts().length === 0) {
+          <p class="info-message">No contacts match the current filter.</p>
         }
         </div>
       </div>
