@@ -46,6 +46,8 @@ export class ContactsComponent {
   showListSearchTags = signal(false);
   showResponsiveDebug = signal(false);
   allowResponsiveDebug = !environment.production;
+  listFilterDraft = signal('');
+  listFilterApplied = signal('');
 
   contacts = signal<ContactList[]>([]);
   selectedContactId = signal<number | null>(null);
@@ -64,6 +66,19 @@ export class ContactsComponent {
 
   communicationDirty = computed(() => {
     return JSON.stringify(this.communicationDraft()) !== JSON.stringify(this.communicationBaseline());
+  });
+
+  filteredContacts = computed(() => {
+    const filterValue = this.listFilterApplied().trim().toLowerCase();
+    if (!filterValue) {
+      return this.contacts();
+    }
+
+    return this.contacts().filter(contact => {
+      const fullName = `${contact.firstName} ${contact.lastName}`.toLowerCase();
+      const tagText = (contact.searchTags ?? []).join(' ').toLowerCase();
+      return fullName.includes(filterValue) || tagText.includes(filterValue);
+    });
   });
 
   displaySearchTags = computed(() => {
@@ -144,6 +159,44 @@ export class ContactsComponent {
 
   toggleListSearchTags(): void {
     this.showListSearchTags.update(value => !value);
+  }
+
+  setListFilterDraft(value: string): void {
+    this.listFilterDraft.set(value ?? '');
+  }
+
+  async clearListFilterDraft(): Promise<void> {
+    this.listFilterDraft.set('');
+    await this.applyListFilter();
+  }
+
+  async applyListFilter(): Promise<void> {
+    this.listFilterApplied.set(this.listFilterDraft().trim());
+
+    const filterValue = this.listFilterApplied().trim().toLowerCase();
+    const filteredList = !filterValue
+      ? this.contacts()
+      : this.contacts().filter(contact => {
+          const fullName = `${contact.firstName} ${contact.lastName}`.toLowerCase();
+          const tagText = (contact.searchTags ?? []).join(' ').toLowerCase();
+          return fullName.includes(filterValue) || tagText.includes(filterValue);
+        });
+
+    if (filteredList.length === 0) {
+      this.selectedContactId.set(null);
+      this.selectedContact.set(this.newContactTemplate());
+      this.originalContact.set(null);
+      this.profileBaseline.set({ ...this.selectedContact() });
+      this.loadCommunicationDraftForKey('new');
+      this.activeEditTab.set('profile');
+      this.editing.set(false);
+      return;
+    }
+
+    const firstFilteredContact = filteredList[0];
+    if (this.selectedContactId() !== firstFilteredContact.id) {
+      await this.selectContact(firstFilteredContact);
+    }
   }
 
   private async loadContactDetail(id: number): Promise<void> {
