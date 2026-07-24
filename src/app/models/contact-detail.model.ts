@@ -23,6 +23,15 @@ export interface ContactPhone {
   modifiedAt: string;
 }
 
+export interface ContactSearchTag {
+  id: number;
+  contactId: number;
+  tagText: string | null;
+  isActive: boolean;
+  createdAt: string;
+  modifiedAt: string;
+}
+
 export interface ContactDetail {
   id: number;
   tenantId: number;
@@ -38,4 +47,5 @@ export interface ContactDetail {
   modifiedAt: string;
   contactAddresses: ContactAddress[];
   contactPhones: ContactPhone[];
+  contactSearchTags: ContactSearchTag[];
 }

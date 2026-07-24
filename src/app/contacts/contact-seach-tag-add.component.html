@@ -1,0 +1,86 @@
+<div class="search-tag-add-control">
+  <div class="search-tag-add-row">
+    <div class="search-tag-input-wrap" (focusout)="handleFocusOut()">
+      <input
+        type="text"
+        [(ngModel)]="entryText"
+        [ngModelOptions]="{ standalone: true }"
+        placeholder="Type or select a search tag"
+        aria-label="Add search tag"
+        autocomplete="off"
+        role="combobox"
+        aria-autocomplete="list"
+        [attr.aria-expanded]="suggestionsOpen"
+        aria-controls="contact-search-tag-dropdown"
+        [attr.aria-activedescendant]="activeDescendantId"
+        (focus)="openSuggestions()"
+        (input)="openSuggestions()"
+        (keydown)="handleInputKeydown($event)" />
+      @if (entryText.trim()) {
+        <button
+          type="button"
+          class="search-tag-input-clear"
+          (click)="clearEntryText()"
+          aria-label="Clear search tag text"
+          title="Clear">
+          X
+        </button>
+      }
+
+      @if (suggestionsOpen) {
+        <div id="contact-search-tag-dropdown" class="search-tag-dropdown" role="listbox" aria-label="Available search tags">
+          @if (loadingSuggestions && filteredSuggestions.length === 0) {
+            <div class="search-tag-dropdown-loading">
+              <span class="search-tag-dropdown-spinner" aria-hidden="true"></span>
+              <span>Loading tags...</span>
+            </div>
+          } @else if (filteredSuggestions.length === 0) {
+            <div class="search-tag-dropdown-empty">No matching tags</div>
+          } @else {
+            @for (tag of filteredSuggestions; track $index) {
+              <button
+                type="button"
+                class="search-tag-dropdown-option"
+                [class.highlighted]="isSuggestionHighlighted($index)"
+                [id]="'contact-search-tag-option-' + $index"
+                role="option"
+                [attr.aria-selected]="isSuggestionHighlighted($index)"
+                (mousedown)="$event.preventDefault()"
+                (click)="selectSuggestion(tag)">
+                {{ tag }}
+              </button>
+            }
+          }
+        </div>
+      }
+    </div>
+    <button type="button" class="secondary action-chip-button tag-add-button" (click)="addTag()" [disabled]="!entryText.trim()">
+      <mat-icon svgIcon="contact-new"></mat-icon>
+      Add
+    </button>
+  </div>
+
+  @if (suggestionWarning) {
+    <p class="search-tag-warning">{{ suggestionWarning }}</p>
+  }
+
+  <div class="tag-pill-list tag-pill-list-edit">
+    @if (activeTags.length === 0) {
+      <span class="tag-pill tag-pill-empty">No tags</span>
+    } @else {
+      @for (tag of activeTags; track tag.index) {
+        <span class="tag-pill tag-pill-removable">
+          <span>{{ tag.text }}</span>
+          <button
+            type="button"
+            class="tag-pill-remove"
+            (click)="removeTagAt(tag.index)"
+            [attr.aria-label]="'Remove search tag ' + tag.text"
+            [title]="'Remove ' + tag.text">
+            X
+          </button>
+        </span>
+      }
+    }
+  </div>
+</div>

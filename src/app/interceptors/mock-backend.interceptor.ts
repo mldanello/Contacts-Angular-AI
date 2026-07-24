@@ -28,7 +28,8 @@ const mockContacts: ContactDetail[] = [
     createdAt: '2026-01-10T08:30:00Z',
     modifiedAt: '2026-06-25T14:15:00Z',
     contactAddresses: [],
-    contactPhones: []
+    contactPhones: [],
+    contactSearchTags: []
   },
   {
     id: 2,
@@ -44,7 +45,8 @@ const mockContacts: ContactDetail[] = [
     createdAt: '2026-02-01T11:00:00Z',
     modifiedAt: '2026-06-20T09:45:00Z',
     contactAddresses: [],
-    contactPhones: []
+    contactPhones: [],
+    contactSearchTags: []
   }
 ];
 
@@ -62,9 +64,42 @@ export class MockBackendInterceptor implements HttpInterceptor {
           const listItems: ContactList[] = mockContacts.map(({ id, firstName, lastName }) => ({
             id,
             firstName,
-            lastName
+            lastName,
+            searchTags: []
           }));
           return of(new HttpResponse({ status: 200, body: listItems }));
+        }
+
+        if (req.url.endsWith('/searchtags') && req.method === 'GET') {
+          const distinctTags = Array.from(
+            new Set(
+              mockContacts
+                .flatMap(contact => contact.contactSearchTags ?? [])
+                .filter(tag => tag.isActive)
+                .map(tag => (tag.tagText ?? '').trim())
+                .filter(tagText => tagText.length > 0)
+                .map(tagText => tagText.toLowerCase())
+            )
+          );
+
+          const displayByKey = new Map<string, string>();
+          for (const tag of mockContacts.flatMap(contact => contact.contactSearchTags ?? [])) {
+            const text = (tag.tagText ?? '').trim();
+            if (!tag.isActive || !text) {
+              continue;
+            }
+
+            const key = text.toLowerCase();
+            if (!displayByKey.has(key)) {
+              displayByKey.set(key, text);
+            }
+          }
+
+          const response = distinctTags
+            .map(key => displayByKey.get(key) ?? key)
+            .sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
+
+          return of(new HttpResponse({ status: 200, body: response }));
         }
 
         if (req.url.match(/\/contacts\/\w+$/) && req.method === 'GET') {
@@ -93,7 +128,8 @@ export class MockBackendInterceptor implements HttpInterceptor {
             createdAt: now,
             modifiedAt: now,
             contactAddresses: body.contactAddresses ?? [],
-            contactPhones: body.contactPhones ?? []
+            contactPhones: body.contactPhones ?? [],
+            contactSearchTags: body.contactSearchTags ?? []
           };
           mockContacts.push(newContact);
           return of(new HttpResponse({ status: 201, body: newContact }));

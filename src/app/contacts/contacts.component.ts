@@ -8,7 +8,8 @@ import { environment } from '../../environments/environment';
 import { ApiService } from '../services/api.service';
 import { AuthService } from '../services/auth.service';
 import { ContactList } from '../models/contact-list.model';
-import { ContactAddress, ContactDetail, ContactPhone } from '../models/contact-detail.model';
+import { ContactAddress, ContactDetail, ContactPhone, ContactSearchTag } from '../models/contact-detail.model';
+import { ContactSearchTagAddComponent } from './contact-seach-tag-add.component';
 
 type EditTab = 'profile' | 'communication';
 type CommunicationStoreKey = number | 'new';
@@ -23,11 +24,13 @@ type DialogMode = 'add' | 'edit';
 @Component({
   standalone: true,
   selector: 'app-contacts',
-  imports: [FormsModule, MatIconModule],
+  imports: [FormsModule, MatIconModule, ContactSearchTagAddComponent],
   templateUrl: './contacts.component.html',
   styleUrls: ['./contacts.component.css']
 })
 export class ContactsComponent {
+  private readonly listTagDisplayLimit = 4;
+
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private authService = inject(AuthService);
@@ -38,7 +41,9 @@ export class ContactsComponent {
   message = signal('');
   error = signal('');
   loading = signal(false);
+  saving = signal(false);
   loadingDetail = signal(false);
+  showListSearchTags = signal(false);
   showResponsiveDebug = signal(false);
   allowResponsiveDebug = !environment.production;
 
@@ -59,6 +64,14 @@ export class ContactsComponent {
 
   communicationDirty = computed(() => {
     return JSON.stringify(this.communicationDraft()) !== JSON.stringify(this.communicationBaseline());
+  });
+
+  displaySearchTags = computed(() => {
+    const tags = this.selectedContact().contactSearchTags ?? [];
+    return tags
+      .filter(tag => tag.isActive)
+      .map(tag => (tag.tagText ?? '').trim())
+      .filter(tagText => tagText.length > 0);
   });
 
   addressDialogOpen = signal(false);
@@ -127,6 +140,10 @@ export class ContactsComponent {
     this.editing.set(true);
     this.message.set('');
     this.error.set('');
+  }
+
+  toggleListSearchTags(): void {
+    this.showListSearchTags.update(value => !value);
   }
 
   private async loadContactDetail(id: number): Promise<void> {
@@ -206,10 +223,30 @@ export class ContactsComponent {
     this.selectedContact.update(contact => ({ ...contact, isActive: value }));
   }
 
+  setContactSearchTags(tags: ContactSearchTag[]): void {
+    this.selectedContact.update(contact => ({
+      ...contact,
+      contactSearchTags: tags.map(tag => ({ ...tag }))
+    }));
+  }
+
+  getVisibleListTags(contact: ContactList): string[] {
+    return contact.searchTags.slice(0, this.listTagDisplayLimit);
+  }
+
+  getHiddenListTagCount(contact: ContactList): number {
+    return Math.max(contact.searchTags.length - this.listTagDisplayLimit, 0);
+  }
+
   async saveContact(): Promise<void> {
+    if (this.saving()) {
+      return;
+    }
+
     this.error.set('');
     this.message.set('');
     this.loading.set(true);
+    this.saving.set(true);
 
     const contact = this.selectedContact();
     const communicationSnapshot = this.cloneCommunication(this.communicationDraft());
@@ -239,6 +276,7 @@ export class ContactsComponent {
     } catch {
       this.error.set('Unable to save contact.');
     } finally {
+      this.saving.set(false);
       this.loading.set(false);
     }
   }
@@ -447,7 +485,8 @@ export class ContactsComponent {
       createdAt: now,
       modifiedAt: now,
       contactAddresses: [],
-      contactPhones: []
+      contactPhones: [],
+      contactSearchTags: []
     };
   }
 
@@ -455,7 +494,11 @@ export class ContactsComponent {
     return {
       id: contact.id,
       firstName: contact.firstName,
-      lastName: contact.lastName
+      lastName: contact.lastName,
+      searchTags: (contact.contactSearchTags ?? [])
+        .filter(tag => tag.isActive)
+        .map(tag => (tag.tagText ?? '').trim())
+        .filter(tagText => tagText.length > 0)
     };
   }
 
@@ -588,7 +631,17 @@ export class ContactsComponent {
       email: contact.email,
       web: contact.web,
       notes: contact.notes,
-      isActive: contact.isActive
+      isActive: contact.isActive,
+      contactSearchTags: this.toComparableSearchTags(contact.contactSearchTags ?? [])
     };
+  }
+
+  private toComparableSearchTags(tags: ContactSearchTag[]) {
+    return tags.map(tag => ({
+      id: tag.id,
+      contactId: tag.contactId,
+      tagText: tag.tagText,
+      isActive: tag.isActive
+    }));
   }
 }
