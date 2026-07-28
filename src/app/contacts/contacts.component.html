@@ -3,87 +3,15 @@
     <div class="responsive-debug-badge" aria-hidden="true"></div>
   }
   <div class="contacts-layout">
-    <div class="contacts-panel">
-      <div class="actions panel-header">
-        <h2>Contacts</h2>
-        <div class="panel-header-actions">
-          <button
-            class="secondary tags-toggle-button action-chip-button"
-            type="button"
-            [class.active]="showListSearchTags()"
-            [attr.aria-pressed]="showListSearchTags()"
-            (click)="toggleListSearchTags()">
-            {{ showListSearchTags() ? 'Hide Tags' : 'Show Tags' }}
-          </button>
-          <button class="secondary new-contact-button action-chip-button" type="button" (click)="createNewContact()">
-            <mat-icon svgIcon="contact-new"></mat-icon>
-            Add
-          </button>
-        </div>
-      </div>
-      <div class="contacts-filter" aria-label="Contact list filter controls">
-        <label for="contactListFilter" class="contacts-filter-label">Filter:</label>
-        <div class="contacts-filter-input-wrap">
-          <input
-            id="contactListFilter"
-            name="contactListFilter"
-            type="text"
-            [ngModel]="listFilterDraft()"
-            (ngModelChange)="setListFilterDraft($event)"
-            placeholder="enter filter criteria ..."
-            (keyup.enter)="applyListFilter()"
-            aria-label="Filter contacts" />
-          <button
-            type="button"
-            class="secondary action-chip-button contacts-filter-chip-button contacts-filter-clear"
-            (click)="clearListFilterDraft()"
-            [disabled]="!listFilterDraft().trim()"
-            aria-label="Clear filter text"
-            title="Clear filter">
-            X
-          </button>
-        </div>
-        <button
-          type="button"
-          class="secondary action-chip-button contacts-filter-chip-button contacts-filter-apply"
-          (click)="applyListFilter()"
-          aria-label="Apply filter">
-          Apply
-        </button>
-      </div>
-      <div class="contact-list-scroll">
-        <div class="contact-list">
-        @for (contact of filteredContacts(); track contact.id) {
-          <div class="contact-item" [class.selected]="selectedContactId() === contact.id" (click)="selectContact(contact)">
-            <div class="contact-main">
-              <span class="contact-name">{{ contact.firstName }} {{ contact.lastName }}</span>
-              @if (showListSearchTags() && contact.searchTags.length > 0) {
-                <div class="contact-tags" aria-label="Search tags">
-                  @for (tagText of getVisibleListTags(contact); track $index) {
-                    <span class="contact-tag-pill">{{ tagText }}</span>
-                  }
-                  @if (getHiddenListTagCount(contact) > 0) {
-                    <span class="contact-tag-pill contact-tag-pill-overflow">+{{ getHiddenListTagCount(contact) }}</span>
-                  }
-                </div>
-              }
-            </div>
-            <div class="contact-actions">
-              <button type="button" class="secondary icon-button" (click)="$event.stopPropagation(); selectContact(contact, true)" aria-label="Edit contact" title="Edit">
-                <mat-icon svgIcon="contact-edit"></mat-icon>
-              </button>
-              <button type="button" class="danger icon-button" (click)="$event.stopPropagation(); confirmDelete(contact.id, contact.firstName + ' ' + contact.lastName)" aria-label="Delete contact" title="Delete">
-                <mat-icon svgIcon="contact-delete"></mat-icon>
-              </button>
-            </div>
-          </div>
-        }
-        @if (filteredContacts().length === 0) {
-          <p class="info-message">No contacts match the current filter.</p>
-        }
-        </div>
-      </div>
-    </div>
+    <app-contact-list-component
+      [contacts]="contacts()"
+      [selectedContactId]="selectedContactId()"
+      (selectContact)="onListSelect($event)"
+      (editContact)="onListEdit($event)"
+      (deleteContact)="onListDelete($event)"
+      (createContact)="onListCreate()"
+      (clearSelection)="onListClearSelection()">
+    </app-contact-list-component>
 
     <div class="contact-detail">
       <h2>{{ selectedContact().id > 0 ? (editing() ? 'Edit Contact' : 'Contact Details') : 'Add Contact' }}</h2>

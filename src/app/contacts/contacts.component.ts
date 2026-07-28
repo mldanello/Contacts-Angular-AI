@@ -10,6 +10,7 @@ import { AuthService } from '../services/auth.service';
 import { ContactList } from '../models/contact-list.model';
 import { ContactAddress, ContactDetail, ContactPhone, ContactSearchTag } from '../models/contact-detail.model';
 import { ContactSearchTagAddComponent } from './contact-seach-tag-add.component';
+import { ContactListComponent } from './contact-list.component';
 
 type EditTab = 'profile' | 'communication';
 type CommunicationStoreKey = number | 'new';
@@ -24,13 +25,11 @@ type DialogMode = 'add' | 'edit';
 @Component({
   standalone: true,
   selector: 'app-contacts',
-  imports: [FormsModule, MatIconModule, ContactSearchTagAddComponent],
+  imports: [FormsModule, MatIconModule, ContactSearchTagAddComponent, ContactListComponent],
   templateUrl: './contacts.component.html',
   styleUrls: ['./contacts.component.css']
 })
 export class ContactsComponent {
-  private readonly listTagDisplayLimit = 4;
-
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private authService = inject(AuthService);
@@ -43,11 +42,8 @@ export class ContactsComponent {
   loading = signal(false);
   saving = signal(false);
   loadingDetail = signal(false);
-  showListSearchTags = signal(false);
   showResponsiveDebug = signal(false);
   allowResponsiveDebug = !environment.production;
-  listFilterDraft = signal('');
-  listFilterApplied = signal('');
 
   contacts = signal<ContactList[]>([]);
   selectedContactId = signal<number | null>(null);
@@ -66,19 +62,6 @@ export class ContactsComponent {
 
   communicationDirty = computed(() => {
     return JSON.stringify(this.communicationDraft()) !== JSON.stringify(this.communicationBaseline());
-  });
-
-  filteredContacts = computed(() => {
-    const filterValue = this.listFilterApplied().trim().toLowerCase();
-    if (!filterValue) {
-      return this.contacts();
-    }
-
-    return this.contacts().filter(contact => {
-      const fullName = `${contact.firstName} ${contact.lastName}`.toLowerCase();
-      const tagText = (contact.searchTags ?? []).join(' ').toLowerCase();
-      return fullName.includes(filterValue) || tagText.includes(filterValue);
-    });
   });
 
   displaySearchTags = computed(() => {
@@ -157,46 +140,30 @@ export class ContactsComponent {
     this.error.set('');
   }
 
-  toggleListSearchTags(): void {
-    this.showListSearchTags.update(value => !value);
+  onListSelect(contact: ContactList): void {
+    void this.selectContact(contact);
   }
 
-  setListFilterDraft(value: string): void {
-    this.listFilterDraft.set(value ?? '');
+  onListEdit(contact: ContactList): void {
+    void this.selectContact(contact, true);
   }
 
-  async clearListFilterDraft(): Promise<void> {
-    this.listFilterDraft.set('');
-    await this.applyListFilter();
+  onListDelete(contact: ContactList): void {
+    this.confirmDelete(contact.id, `${contact.firstName} ${contact.lastName}`);
   }
 
-  async applyListFilter(): Promise<void> {
-    this.listFilterApplied.set(this.listFilterDraft().trim());
+  onListCreate(): void {
+    this.createNewContact();
+  }
 
-    const filterValue = this.listFilterApplied().trim().toLowerCase();
-    const filteredList = !filterValue
-      ? this.contacts()
-      : this.contacts().filter(contact => {
-          const fullName = `${contact.firstName} ${contact.lastName}`.toLowerCase();
-          const tagText = (contact.searchTags ?? []).join(' ').toLowerCase();
-          return fullName.includes(filterValue) || tagText.includes(filterValue);
-        });
-
-    if (filteredList.length === 0) {
-      this.selectedContactId.set(null);
-      this.selectedContact.set(this.newContactTemplate());
-      this.originalContact.set(null);
-      this.profileBaseline.set({ ...this.selectedContact() });
-      this.loadCommunicationDraftForKey('new');
-      this.activeEditTab.set('profile');
-      this.editing.set(false);
-      return;
-    }
-
-    const firstFilteredContact = filteredList[0];
-    if (this.selectedContactId() !== firstFilteredContact.id) {
-      await this.selectContact(firstFilteredContact);
-    }
+  onListClearSelection(): void {
+    this.selectedContactId.set(null);
+    this.selectedContact.set(this.newContactTemplate());
+    this.originalContact.set(null);
+    this.profileBaseline.set({ ...this.selectedContact() });
+    this.loadCommunicationDraftForKey('new');
+    this.activeEditTab.set('profile');
+    this.editing.set(false);
   }
 
   private async loadContactDetail(id: number): Promise<void> {
@@ -281,14 +248,6 @@ export class ContactsComponent {
       ...contact,
       contactSearchTags: tags.map(tag => ({ ...tag }))
     }));
-  }
-
-  getVisibleListTags(contact: ContactList): string[] {
-    return contact.searchTags.slice(0, this.listTagDisplayLimit);
-  }
-
-  getHiddenListTagCount(contact: ContactList): number {
-    return Math.max(contact.searchTags.length - this.listTagDisplayLimit, 0);
   }
 
   async saveContact(): Promise<void> {
