@@ -45,6 +45,7 @@ export class ContactsComponent {
   loadingDetail = signal(false);
   showResponsiveDebug = signal(false);
   allowResponsiveDebug = !environment.production;
+  noFilterResults = signal(false);
 
   contacts = signal<ContactList[]>([]);
   selectedContactId = signal<number | null>(null);
@@ -117,6 +118,7 @@ export class ContactsComponent {
   }
 
   async selectContact(contact: ContactList, edit = false): Promise<void> {
+    this.noFilterResults.set(false);
     this.selectedContactId.set(contact.id);
     this.message.set('');
     this.error.set('');
@@ -130,6 +132,7 @@ export class ContactsComponent {
   }
 
   createNewContact(): void {
+    this.noFilterResults.set(false);
     this.selectedContactId.set(null);
     this.selectedContact.set(this.newContactTemplate());
     this.originalContact.set(null);
@@ -158,8 +161,9 @@ export class ContactsComponent {
   }
 
   onListClearSelection(): void {
+    this.noFilterResults.set(true);
     this.selectedContactId.set(null);
-    this.selectedContact.set(this.newContactTemplate());
+    this.selectedContact.set(this.emptySelectionTemplate());
     this.originalContact.set(null);
     this.profileBaseline.set({ ...this.selectedContact() });
     this.loadCommunicationDraftForKey('new');
@@ -568,6 +572,26 @@ export class ContactsComponent {
       isActive: true,
       createdAt: now,
       modifiedAt: now,
+      contactAddresses: [],
+      contactPhones: [],
+      contactSearchTags: []
+    };
+  }
+
+  private emptySelectionTemplate(): ContactDetail {
+    return {
+      id: 0,
+      tenantId: 1,
+      firstName: '',
+      middleName: '',
+      lastName: '',
+      companyName: '',
+      email: '',
+      web: '',
+      notes: '',
+      isActive: false,
+      createdAt: '',
+      modifiedAt: '',
       contactAddresses: [],
       contactPhones: [],
       contactSearchTags: []

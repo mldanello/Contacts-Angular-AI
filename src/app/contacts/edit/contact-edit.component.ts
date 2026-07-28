@@ -45,6 +45,7 @@ export class ContactEditComponent {
   @Input() profileDirty = false;
   @Input() communicationDirty = false;
   @Input() saving = false;
+  @Input() noFilterResults = false;
 
   @Input() addresses: ContactAddress[] = [];
   @Input() phones: ContactPhone[] = [];
@@ -103,5 +104,21 @@ export class ContactEditComponent {
 
   onPhoneFieldChange(event: { field: keyof ContactPhone; value: ContactPhone[keyof ContactPhone] }): void {
     this.editAction.emit({ type: 'phone-field-change', field: event.field, value: event.value });
+  }
+
+  get isActiveLabel(): string {
+    if (this.noFilterResults) {
+      return '';
+    }
+
+    return this.contact.isActive ? 'Yes' : 'No';
+  }
+
+  get createdAtDisplay(): string {
+    return this.noFilterResults ? '' : this.contact.createdAt;
+  }
+
+  get modifiedAtDisplay(): string {
+    return this.noFilterResults ? '' : this.contact.modifiedAt;
   }
 }

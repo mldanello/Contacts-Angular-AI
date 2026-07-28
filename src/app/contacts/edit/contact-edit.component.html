@@ -92,20 +92,21 @@
               id="isActive"
               name="isActive"
               type="checkbox"
+              [disabled]="noFilterResults"
               [ngModel]="contact.isActive"
               (ngModelChange)="setIsActive($event)" />
-            <span>{{ contact.isActive ? 'Yes' : 'No' }}</span>
+            <span>{{ isActiveLabel }}</span>
           </label>
         </div>
 
         <div class="metadata-inline-item metadata-inline-item-date">
           <label class="metadata-inline-label" for="createdAt">Created at</label>
-          <input class="metadata-date-input" id="createdAt" name="createdAt" [ngModel]="contact.createdAt" readonly tabindex="-1" />
+          <input class="metadata-date-input" id="createdAt" name="createdAt" [ngModel]="createdAtDisplay" readonly tabindex="-1" />
         </div>
 
         <div class="metadata-inline-item metadata-inline-item-date">
           <label class="metadata-inline-label" for="modifiedAt">Modified at</label>
-          <input class="metadata-date-input" id="modifiedAt" name="modifiedAt" [ngModel]="contact.modifiedAt" readonly tabindex="-1" />
+          <input class="metadata-date-input" id="modifiedAt" name="modifiedAt" [ngModel]="modifiedAtDisplay" readonly tabindex="-1" />
         </div>
       </div>
     </div>
@@ -145,11 +146,11 @@
           Save
         }
       </button>
-      <button class="secondary" type="button" (click)="uiAction.emit({ type: 'cancel' })">
+      <button class="secondary" type="button" [disabled]="noFilterResults" (click)="uiAction.emit({ type: 'cancel' })">
         <mat-icon svgIcon="contact-cancel"></mat-icon>
         Cancel
       </button>
-      <button class="secondary" type="button" (click)="uiAction.emit({ type: 'reset' })">
+      <button class="secondary" type="button" [disabled]="noFilterResults" (click)="uiAction.emit({ type: 'reset' })">
         <mat-icon svgIcon="contact-reset"></mat-icon>
         Reset
       </button>
