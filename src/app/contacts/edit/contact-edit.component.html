@@ -11,7 +11,7 @@
         type="button"
         class="tab-button"
         [class.active]="activeEditTab === 'profile'"
-        (click)="activeTabChange.emit('profile')"
+        (click)="setActiveTab('profile')"
         aria-label="Show profile tab">
         Profile
         @if (profileDirty) {
@@ -22,7 +22,7 @@
         type="button"
         class="tab-button"
         [class.active]="activeEditTab === 'communication'"
-        (click)="activeTabChange.emit('communication')"
+        (click)="setActiveTab('communication')"
         aria-label="Show communication tab">
         Communication
         @if (communicationDirty) {
@@ -120,18 +120,18 @@
         [phoneDialogOpen]="phoneDialogOpen"
         [phoneDialogMode]="phoneDialogMode"
         [phoneDialogForm]="phoneDialogForm"
-        (addAddress)="addAddress.emit()"
-        (editAddress)="editAddress.emit($event)"
-        (deleteAddress)="deleteAddress.emit($event)"
-        (closeAddressDialog)="closeAddressDialog.emit()"
-        (saveAddressDialog)="saveAddressDialog.emit()"
-        (addressFieldChange)="addressFieldChange.emit($event)"
-        (addPhone)="addPhone.emit()"
-        (editPhone)="editPhone.emit($event)"
-        (deletePhone)="deletePhone.emit($event)"
-        (closePhoneDialog)="closePhoneDialog.emit()"
-        (savePhoneDialog)="savePhoneDialog.emit()"
-        (phoneFieldChange)="phoneFieldChange.emit($event)">
+        (addAddress)="editAction.emit({ type: 'address-add' })"
+        (editAddress)="onAddressEdit($event)"
+        (deleteAddress)="onAddressDelete($event)"
+        (closeAddressDialog)="editAction.emit({ type: 'address-dialog-close' })"
+        (saveAddressDialog)="editAction.emit({ type: 'address-dialog-save' })"
+        (addressFieldChange)="onAddressFieldChange($event)"
+        (addPhone)="editAction.emit({ type: 'phone-add' })"
+        (editPhone)="onPhoneEdit($event)"
+        (deletePhone)="onPhoneDelete($event)"
+        (closePhoneDialog)="editAction.emit({ type: 'phone-dialog-close' })"
+        (savePhoneDialog)="editAction.emit({ type: 'phone-dialog-save' })"
+        (phoneFieldChange)="onPhoneFieldChange($event)">
       </app-communication-edit>
     </div>
 
@@ -145,16 +145,16 @@
           Save
         }
       </button>
-      <button class="secondary" type="button" (click)="cancelEdit.emit()">
+      <button class="secondary" type="button" (click)="uiAction.emit({ type: 'cancel' })">
         <mat-icon svgIcon="contact-cancel"></mat-icon>
         Cancel
       </button>
-      <button class="secondary" type="button" (click)="resetContact.emit()">
+      <button class="secondary" type="button" (click)="uiAction.emit({ type: 'reset' })">
         <mat-icon svgIcon="contact-reset"></mat-icon>
         Reset
       </button>
       @if (contact.id > 0) {
-        <button class="danger" type="button" (click)="deleteContact.emit()">
+        <button class="danger" type="button" (click)="uiAction.emit({ type: 'delete' })">
           <mat-icon svgIcon="contact-delete"></mat-icon>
           Delete
         </button>

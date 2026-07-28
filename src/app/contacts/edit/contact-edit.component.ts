@@ -9,6 +9,29 @@ import { DialogMode as PhoneDialogMode } from '../communication/edit/phone-edit.
 
 export type EditTab = 'profile' | 'communication';
 
+export type ContactEditUiAction =
+  | { type: 'save' }
+  | { type: 'cancel' }
+  | { type: 'reset' }
+  | { type: 'delete' }
+  | { type: 'set-tab'; tab: EditTab };
+
+export type ContactEditAction =
+  | { type: 'contact-change'; contact: ContactDetail }
+  | { type: 'tags-change'; tags: ContactSearchTag[] }
+  | { type: 'address-add' }
+  | { type: 'address-edit'; index: number }
+  | { type: 'address-delete'; index: number }
+  | { type: 'address-dialog-close' }
+  | { type: 'address-dialog-save' }
+  | { type: 'address-field-change'; field: keyof ContactAddress; value: ContactAddress[keyof ContactAddress] }
+  | { type: 'phone-add' }
+  | { type: 'phone-edit'; index: number }
+  | { type: 'phone-delete'; index: number }
+  | { type: 'phone-dialog-close' }
+  | { type: 'phone-dialog-save' }
+  | { type: 'phone-field-change'; field: keyof ContactPhone; value: ContactPhone[keyof ContactPhone] };
+
 @Component({
   standalone: true,
   selector: 'app-contact-edit',
@@ -34,43 +57,51 @@ export class ContactEditComponent {
   @Input() phoneDialogMode: PhoneDialogMode = 'add';
   @Input({ required: true }) phoneDialogForm!: ContactPhone;
 
-  @Output() saveContact = new EventEmitter<void>();
-  @Output() cancelEdit = new EventEmitter<void>();
-  @Output() resetContact = new EventEmitter<void>();
-  @Output() deleteContact = new EventEmitter<void>();
-
-  @Output() activeTabChange = new EventEmitter<EditTab>();
-  @Output() contactChange = new EventEmitter<ContactDetail>();
-  @Output() tagsChange = new EventEmitter<ContactSearchTag[]>();
-
-  @Output() addAddress = new EventEmitter<void>();
-  @Output() editAddress = new EventEmitter<number>();
-  @Output() deleteAddress = new EventEmitter<number>();
-  @Output() closeAddressDialog = new EventEmitter<void>();
-  @Output() saveAddressDialog = new EventEmitter<void>();
-  @Output() addressFieldChange = new EventEmitter<{ field: keyof ContactAddress; value: ContactAddress[keyof ContactAddress] }>();
-
-  @Output() addPhone = new EventEmitter<void>();
-  @Output() editPhone = new EventEmitter<number>();
-  @Output() deletePhone = new EventEmitter<number>();
-  @Output() closePhoneDialog = new EventEmitter<void>();
-  @Output() savePhoneDialog = new EventEmitter<void>();
-  @Output() phoneFieldChange = new EventEmitter<{ field: keyof ContactPhone; value: ContactPhone[keyof ContactPhone] }>();
+  @Output() uiAction = new EventEmitter<ContactEditUiAction>();
+  @Output() editAction = new EventEmitter<ContactEditAction>();
 
   setField<K extends keyof Omit<ContactDetail, 'id' | 'tenantId' | 'isActive' | 'createdAt' | 'modifiedAt'>>(field: K, value: ContactDetail[K]): void {
-    this.contactChange.emit({ ...this.contact, [field]: value });
+    this.editAction.emit({ type: 'contact-change', contact: { ...this.contact, [field]: value } });
   }
 
   setIsActive(value: boolean): void {
-    this.contactChange.emit({ ...this.contact, isActive: value });
+    this.editAction.emit({ type: 'contact-change', contact: { ...this.contact, isActive: value } });
   }
 
   setTags(tags: ContactSearchTag[]): void {
-    this.tagsChange.emit(tags);
+    this.editAction.emit({ type: 'tags-change', tags });
   }
 
   onSubmit(event: Event): void {
     event.preventDefault();
-    this.saveContact.emit();
+    this.uiAction.emit({ type: 'save' });
+  }
+
+  setActiveTab(tab: EditTab): void {
+    this.uiAction.emit({ type: 'set-tab', tab });
+  }
+
+  onAddressEdit(index: number): void {
+    this.editAction.emit({ type: 'address-edit', index });
+  }
+
+  onAddressDelete(index: number): void {
+    this.editAction.emit({ type: 'address-delete', index });
+  }
+
+  onAddressFieldChange(event: { field: keyof ContactAddress; value: ContactAddress[keyof ContactAddress] }): void {
+    this.editAction.emit({ type: 'address-field-change', field: event.field, value: event.value });
+  }
+
+  onPhoneEdit(index: number): void {
+    this.editAction.emit({ type: 'phone-edit', index });
+  }
+
+  onPhoneDelete(index: number): void {
+    this.editAction.emit({ type: 'phone-delete', index });
+  }
+
+  onPhoneFieldChange(event: { field: keyof ContactPhone; value: ContactPhone[keyof ContactPhone] }): void {
+    this.editAction.emit({ type: 'phone-field-change', field: event.field, value: event.value });
   }
 }

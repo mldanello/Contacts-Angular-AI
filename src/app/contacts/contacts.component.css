@@ -58,6 +58,19 @@
   gap: 1rem;
 }
 
+.contact-detail-read-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(18rem, 0.85fr);
+  gap: 1rem;
+  align-items: start;
+  min-width: 0;
+}
+
+.contact-detail-read-layout app-contact-detail,
+.contact-detail-read-layout app-communication-display {
+  min-width: 0;
+}
+
 .error-message,
 .info-message {
   padding: 1rem;
@@ -95,6 +108,11 @@
     overflow-y: visible;
     padding-right: 0;
   }
+
+  .contact-detail-read-layout {
+    grid-template-columns: 1fr;
+    gap: 0.9rem;
+  }
 }
 
 @media (max-width: 740px) {
@@ -120,6 +138,10 @@
     min-height: 0;
     padding-right: 0.25rem;
   }
+
+  .contact-detail-read-layout {
+    gap: 0.75rem;
+  }
 }
 
 @media (orientation: landscape) and (max-height: 500px) {
@@ -140,6 +162,11 @@
     min-height: 0;
     overflow-y: auto;
     padding-right: 0.2rem;
+  }
+
+  .contact-detail-read-layout {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
   }
 }
 

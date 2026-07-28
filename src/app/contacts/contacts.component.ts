@@ -10,7 +10,7 @@ import { ContactList } from '../models/contact-list.model';
 import { ContactAddress, ContactDetail, ContactPhone, ContactSearchTag } from '../models/contact-detail.model';
 import { ContactListComponent } from './list/contact-list.component';
 import { ContactDetailComponent } from './detail/contact-detail.component';
-import { ContactEditComponent } from './edit/contact-edit.component';
+import { ContactEditAction, ContactEditComponent, ContactEditUiAction } from './edit/contact-edit.component';
 import { CommunicationDisplayComponent } from './communication/display/communication-display.component';
 
 type EditTab = 'profile' | 'communication';
@@ -255,12 +255,71 @@ export class ContactsComponent {
     this.selectedContact.set({ ...contact });
   }
 
-  onAddressDialogFieldChange(event: { field: keyof ContactAddress; value: ContactAddress[keyof ContactAddress] }): void {
-    this.setAddressDialogField(event.field, event.value as never);
+  onContactEditUiAction(action: ContactEditUiAction): void {
+    switch (action.type) {
+      case 'save':
+        void this.saveContact();
+        break;
+      case 'cancel':
+        this.cancelEdit();
+        break;
+      case 'reset':
+        this.createNewContact();
+        break;
+      case 'delete':
+        this.confirmDelete(this.selectedContact().id, `${this.selectedContact().firstName} ${this.selectedContact().lastName}`);
+        break;
+      case 'set-tab':
+        this.setActiveEditTab(action.tab);
+        break;
+    }
   }
 
-  onPhoneDialogFieldChange(event: { field: keyof ContactPhone; value: ContactPhone[keyof ContactPhone] }): void {
-    this.setPhoneDialogField(event.field, event.value as never);
+  onContactEditAction(action: ContactEditAction): void {
+    switch (action.type) {
+      case 'contact-change':
+        this.onEditContactChange(action.contact);
+        break;
+      case 'tags-change':
+        this.setContactSearchTags(action.tags);
+        break;
+      case 'address-add':
+        this.openAddAddressDialog();
+        break;
+      case 'address-edit':
+        this.openEditAddressDialog(action.index);
+        break;
+      case 'address-delete':
+        this.removeAddress(action.index);
+        break;
+      case 'address-dialog-close':
+        this.closeAddressDialog();
+        break;
+      case 'address-dialog-save':
+        this.saveAddressDialog();
+        break;
+      case 'address-field-change':
+        this.setAddressDialogField(action.field, action.value as never);
+        break;
+      case 'phone-add':
+        this.openAddPhoneDialog();
+        break;
+      case 'phone-edit':
+        this.openEditPhoneDialog(action.index);
+        break;
+      case 'phone-delete':
+        this.removePhone(action.index);
+        break;
+      case 'phone-dialog-close':
+        this.closePhoneDialog();
+        break;
+      case 'phone-dialog-save':
+        this.savePhoneDialog();
+        break;
+      case 'phone-field-change':
+        this.setPhoneDialogField(action.field, action.value as never);
+        break;
+    }
   }
 
   async saveContact(): Promise<void> {

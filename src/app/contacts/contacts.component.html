@@ -23,16 +23,18 @@
       }
 
       @if (!loadingDetail() && selectedContact().id > 0 && !editing()) {
-        <app-contact-detail
-          [contact]="selectedContact()"
-          [displaySearchTags]="displaySearchTags()"
-          (editContact)="goToEditMode()"
-          (deleteContact)="confirmDelete(selectedContact().id, selectedContact().firstName + ' ' + selectedContact().lastName)">
-        </app-contact-detail>
-        <app-communication-display
-          [addresses]="selectedContact().contactAddresses"
-          [phones]="selectedContact().contactPhones">
-        </app-communication-display>
+        <div class="contact-detail-read-layout">
+          <app-contact-detail
+            [contact]="selectedContact()"
+            [displaySearchTags]="displaySearchTags()"
+            (editContact)="goToEditMode()"
+            (deleteContact)="confirmDelete(selectedContact().id, selectedContact().firstName + ' ' + selectedContact().lastName)">
+          </app-contact-detail>
+          <app-communication-display
+            [addresses]="selectedContact().contactAddresses"
+            [phones]="selectedContact().contactPhones">
+          </app-communication-display>
+        </div>
       } @else if (!loadingDetail()) {
         <app-contact-edit
           [contact]="selectedContact()"
@@ -48,25 +50,8 @@
           [phoneDialogOpen]="phoneDialogOpen()"
           [phoneDialogMode]="phoneDialogMode()"
           [phoneDialogForm]="phoneDialogForm()"
-          (saveContact)="saveContact()"
-          (cancelEdit)="cancelEdit()"
-          (resetContact)="createNewContact()"
-          (deleteContact)="confirmDelete(selectedContact().id, selectedContact().firstName + ' ' + selectedContact().lastName)"
-          (activeTabChange)="setActiveEditTab($event)"
-          (contactChange)="onEditContactChange($event)"
-          (tagsChange)="setContactSearchTags($event)"
-          (addAddress)="openAddAddressDialog()"
-          (editAddress)="openEditAddressDialog($event)"
-          (deleteAddress)="removeAddress($event)"
-          (closeAddressDialog)="closeAddressDialog()"
-          (saveAddressDialog)="saveAddressDialog()"
-          (addressFieldChange)="onAddressDialogFieldChange($event)"
-          (addPhone)="openAddPhoneDialog()"
-          (editPhone)="openEditPhoneDialog($event)"
-          (deletePhone)="removePhone($event)"
-          (closePhoneDialog)="closePhoneDialog()"
-          (savePhoneDialog)="savePhoneDialog()"
-          (phoneFieldChange)="onPhoneDialogFieldChange($event)">
+          (uiAction)="onContactEditUiAction($event)"
+          (editAction)="onContactEditAction($event)">
         </app-contact-edit>
       }
 
