@@ -79,6 +79,12 @@
   background: linear-gradient(to top, #ffffff 70%, rgba(255, 255, 255, 0.92) 100%);
 }
 
+@media (max-width: 1280px) {
+  .detail-actions {
+    display: none;
+  }
+}
+
 button.primary {
   border: none;
   color: #fff;

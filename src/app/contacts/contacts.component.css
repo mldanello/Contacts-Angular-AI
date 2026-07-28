@@ -71,6 +71,36 @@
   min-width: 0;
 }
 
+.contact-detail-read-actions-vertical {
+  display: none;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding-top: 0.35rem;
+}
+
+.contact-detail-read-actions-vertical button {
+  border-radius: 0.75rem;
+  height: 1.9rem;
+  padding: 0 1.05rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.92rem;
+}
+
+.contact-detail-read-actions-vertical .primary {
+  border: none;
+  color: #fff;
+  background: #2563eb;
+}
+
+.contact-detail-read-actions-vertical .danger {
+  border: none;
+  background: #ef4444;
+  color: white;
+}
+
 .error-message,
 .info-message {
   padding: 1rem;
@@ -85,6 +115,17 @@
 .info-message {
   background: #dbeafe;
   color: #1d4ed8;
+}
+
+@media (max-width: 1280px) {
+  .contact-detail-read-layout {
+    grid-template-columns: 1fr;
+    gap: 0.9rem;
+  }
+
+  .contact-detail-read-actions-vertical {
+    display: flex;
+  }
 }
 
 @media (max-width: 980px) {
@@ -107,11 +148,6 @@
     overflow-x: hidden;
     overflow-y: visible;
     padding-right: 0;
-  }
-
-  .contact-detail-read-layout {
-    grid-template-columns: 1fr;
-    gap: 0.9rem;
   }
 }
 
@@ -141,6 +177,16 @@
 
   .contact-detail-read-layout {
     gap: 0.75rem;
+  }
+
+  .contact-detail-read-actions-vertical {
+    justify-content: stretch;
+    gap: 0.5rem;
+  }
+
+  .contact-detail-read-actions-vertical button {
+    flex: 1 1 calc(50% - 0.5rem);
+    justify-content: center;
   }
 }
 
