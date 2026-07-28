@@ -1,0 +1,94 @@
+.dialog-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.3);
+  z-index: 40;
+}
+
+.inline-dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(92vw, 30rem);
+  max-height: min(82vh, 32rem);
+  overflow: auto;
+  z-index: 41;
+  background: #ffffff;
+  border: 1px solid #dbeafe;
+  border-radius: 0.95rem;
+  padding: 0.9rem;
+}
+
+.dialog-form-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 0.65rem;
+}
+
+.input-group {
+  display: grid;
+  gap: 0.3rem;
+}
+
+.input-group label {
+  font-weight: 600;
+  color: #334155;
+}
+
+.input-group input {
+  width: 100%;
+  border-radius: 0.75rem;
+  border: 1px solid #e2e8f0;
+  padding: 0.54rem 0.82rem;
+  line-height: 1.2;
+  background: #ffffff;
+}
+
+.checkbox-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.38rem;
+  min-height: 1.72rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 0.62rem;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.dialog-actions {
+  margin-top: 0.75rem;
+}
+
+button.primary,
+button.secondary {
+  border-radius: 0.75rem;
+  height: 1.9rem;
+  padding: 0 1.05rem;
+  cursor: pointer;
+}
+
+button.primary {
+  border: none;
+  color: #fff;
+  background: #2563eb;
+}
+
+button.secondary {
+  border: 1px solid #cbd5e1;
+  background: #f8fafc;
+  color: #334155;
+}
+
+@media (max-width: 740px) {
+  .dialog-form-grid {
+    grid-template-columns: 1fr;
+  }
+}

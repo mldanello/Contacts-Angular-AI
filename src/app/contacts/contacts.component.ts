@@ -1,16 +1,17 @@
 import { Component, computed, inject, signal } from '@angular/core';
 
-import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DomSanitizer } from '@angular/platform-browser';
-import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
+import { MatIconRegistry } from '@angular/material/icon';
 import { environment } from '../../environments/environment';
 import { ApiService } from '../services/api.service';
 import { AuthService } from '../services/auth.service';
 import { ContactList } from '../models/contact-list.model';
 import { ContactAddress, ContactDetail, ContactPhone, ContactSearchTag } from '../models/contact-detail.model';
-import { ContactSearchTagAddComponent } from './contact-seach-tag-add.component';
-import { ContactListComponent } from './contact-list.component';
+import { ContactListComponent } from './list/contact-list.component';
+import { ContactDetailComponent } from './detail/contact-detail.component';
+import { ContactEditComponent } from './edit/contact-edit.component';
+import { CommunicationDisplayComponent } from './communication/display/communication-display.component';
 
 type EditTab = 'profile' | 'communication';
 type CommunicationStoreKey = number | 'new';
@@ -25,7 +26,7 @@ type DialogMode = 'add' | 'edit';
 @Component({
   standalone: true,
   selector: 'app-contacts',
-  imports: [FormsModule, MatIconModule, ContactSearchTagAddComponent, ContactListComponent],
+  imports: [ContactListComponent, ContactDetailComponent, ContactEditComponent, CommunicationDisplayComponent],
   templateUrl: './contacts.component.html',
   styleUrls: ['./contacts.component.css']
 })
@@ -248,6 +249,18 @@ export class ContactsComponent {
       ...contact,
       contactSearchTags: tags.map(tag => ({ ...tag }))
     }));
+  }
+
+  onEditContactChange(contact: ContactDetail): void {
+    this.selectedContact.set({ ...contact });
+  }
+
+  onAddressDialogFieldChange(event: { field: keyof ContactAddress; value: ContactAddress[keyof ContactAddress] }): void {
+    this.setAddressDialogField(event.field, event.value as never);
+  }
+
+  onPhoneDialogFieldChange(event: { field: keyof ContactPhone; value: ContactPhone[keyof ContactPhone] }): void {
+    this.setPhoneDialogField(event.field, event.value as never);
   }
 
   async saveContact(): Promise<void> {

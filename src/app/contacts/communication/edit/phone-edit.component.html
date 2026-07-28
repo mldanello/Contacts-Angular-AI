@@ -1,0 +1,34 @@
+@if (open) {
+  <div class="dialog-overlay" (click)="onClose()"></div>
+  <div class="inline-dialog" role="dialog" aria-modal="true" aria-label="Phone editor">
+    <h3>{{ mode === 'edit' ? 'Edit Phone' : 'Add Phone' }}</h3>
+    <div class="dialog-form-grid">
+      <div class="input-group">
+        <label for="phoneType">Type</label>
+        <input id="phoneType" name="phoneType" [ngModelOptions]="{ standalone: true }" [ngModel]="phone.type" (ngModelChange)="setField('type', $event)" />
+      </div>
+      <div class="input-group">
+        <label for="phoneNumber">Number</label>
+        <input id="phoneNumber" name="phoneNumber" [ngModelOptions]="{ standalone: true }" [ngModel]="phone.number" (ngModelChange)="setField('number', $event)" />
+      </div>
+      <div class="input-group">
+        <label for="phoneIsPrimary">Primary</label>
+        <label class="checkbox-inline" for="phoneIsPrimary">
+          <input id="phoneIsPrimary" name="phoneIsPrimary" type="checkbox" [ngModelOptions]="{ standalone: true }" [ngModel]="phone.isPrimary" (ngModelChange)="setField('isPrimary', $event)" />
+          <span>{{ phone.isPrimary ? 'Primary' : 'Secondary' }}</span>
+        </label>
+      </div>
+      <div class="input-group">
+        <label for="phoneIsActive">Status</label>
+        <label class="checkbox-inline" for="phoneIsActive">
+          <input id="phoneIsActive" name="phoneIsActive" type="checkbox" [ngModelOptions]="{ standalone: true }" [ngModel]="phone.isActive" (ngModelChange)="setField('isActive', $event)" />
+          <span>{{ phone.isActive ? 'Active' : 'Inactive' }}</span>
+        </label>
+      </div>
+    </div>
+    <div class="actions dialog-actions">
+      <button type="button" class="secondary" (click)="onClose()">Cancel</button>
+      <button type="button" class="primary" [disabled]="!phone.number.trim()" (click)="onSave()">Save Phone</button>
+    </div>
+  </div>
+}

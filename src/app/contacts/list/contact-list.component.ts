@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
-import { ContactList } from '../models/contact-list.model';
+import { ContactList } from '../../models/contact-list.model';
 
 @Component({
   standalone: true,

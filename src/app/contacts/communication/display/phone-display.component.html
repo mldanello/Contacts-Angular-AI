@@ -1,0 +1,22 @@
+<div class="comm-item">
+  <div class="comm-item-text">
+    <strong>{{ phone.type || 'Phone' }}</strong>
+    <span>{{ phone.number }}</span>
+    @if (phone.isPrimary) {
+      <span>Primary</span>
+    }
+    @if (!phone.isActive) {
+      <span>Inactive</span>
+    }
+  </div>
+  @if (showActions) {
+    <div class="comm-item-actions">
+      <button type="button" class="secondary icon-button" (click)="onEdit()" aria-label="Edit phone" title="Edit">
+        <mat-icon svgIcon="contact-edit"></mat-icon>
+      </button>
+      <button type="button" class="danger icon-button" (click)="onDelete()" aria-label="Delete phone" title="Delete">
+        <mat-icon svgIcon="contact-delete"></mat-icon>
+      </button>
+    </div>
+  }
+</div>

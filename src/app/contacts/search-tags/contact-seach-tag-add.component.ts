@@ -2,8 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
-import { ContactSearchTag } from '../models/contact-detail.model';
-import { ApiService } from '../services/api.service';
+import { ContactSearchTag } from '../../models/contact-detail.model';
+import { ApiService } from '../../services/api.service';
 
 @Component({
   standalone: true,
