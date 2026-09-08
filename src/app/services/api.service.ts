@@ -7,6 +7,15 @@ import { ContactDetail, ContactSearchTag } from '../models/contact-detail.model'
 
 import { environment } from '../../environments/environment';
 
+export interface UiVersionInfo {
+  appName: string;
+  appVersion: string;
+  buildTimestampUtc: string;
+  gitCommit: string | null;
+  serverStartedAtUtc: string;
+  parseError?: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class ApiService {
   private readonly baseUrl = environment.apiBaseUrl;
@@ -39,6 +48,18 @@ export class ApiService {
 
   async authenticate(username: string, password: string): Promise<AuthToken> {
     return firstValueFrom(this.http.post<AuthToken>(this.tokenUrl, { username, password }));
+  }
+
+  async getUiVersionInfo(): Promise<UiVersionInfo | null> {
+    try {
+      return await firstValueFrom(
+        this.http
+          .get<UiVersionInfo>('/__version')
+          .pipe(timeout(1500), retry({ count: 1, delay: () => timer(250) }))
+      );
+    } catch {
+      return null;
+    }
   }
 
   async listContacts(): Promise<ContactList[]> {

@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { ApiService } from '../services/api.service';
 import { environment } from '../../environments/environment';
 
@@ -8,13 +8,21 @@ import { environment } from '../../environments/environment';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit {
   private api = inject(ApiService);
-  readonly appVersion = environment.appVersion;
+  readonly appVersion = signal(environment.appVersion || 'unknown');
 
   checkingApi = signal(false);
   apiStatus = signal<'idle' | 'success' | 'error'>('idle');
   apiStatusMessage = signal('');
+
+  async ngOnInit(): Promise<void> {
+    const versionInfo = await this.api.getUiVersionInfo();
+    const runtimeVersion = versionInfo?.appVersion?.trim();
+    if (runtimeVersion) {
+      this.appVersion.set(runtimeVersion);
+    }
+  }
 
   async checkApiConnection(): Promise<void> {
     this.checkingApi.set(true);
