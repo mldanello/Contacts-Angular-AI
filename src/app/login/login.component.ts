@@ -59,7 +59,7 @@ export class LoginComponent {
 
   async demoLogin(): Promise<void> {
     this.username = 'testuser';
-    this.password = 'P@ssw0rd';
+    this.password = 'R7!vN3@qL9#tX2$kM877h';
     await this.login();
   }
 }

@@ -5,3 +5,29 @@
 .app-shell {
   min-height: 100vh;
 }
+
+.nav-action {
+  border: 1px solid #64748b;
+  background: rgba(15, 23, 42, 0.4);
+  color: #e2e8f0;
+  border-radius: 0.55rem;
+  height: 1.95rem;
+  padding: 0 0.75rem;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.nav-action:hover {
+  border-color: #94a3b8;
+  color: #f8fafc;
+}
+
+.nav-debug-toggle {
+  border-radius: 999px;
+  height: 1.55rem;
+  padding: 0 0.55rem;
+  font-size: 0.72rem;
+  line-height: 1;
+  border-color: #94a3b8;
+  color: #cbd5e1;
+}

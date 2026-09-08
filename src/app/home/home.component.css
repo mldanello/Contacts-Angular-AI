@@ -17,6 +17,18 @@
   color: #475569;
 }
 
+.hero-text .app-version {
+  display: inline-block;
+  margin: 0 0 0.75rem;
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  border: 1px solid #bfdbfe;
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
 .hero-graphic {
   background: linear-gradient(135deg,#0ea5e9,#6366f1);
   border-radius: 1.5rem;

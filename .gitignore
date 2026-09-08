@@ -7,5 +7,8 @@ coverage/
 .idea/
 .vscode/
 *.log
-environment.ts
-environment.prod.ts
+!src/environments/environment.ts
+!src/environments/environment.prod.ts
+src/environments/*.local.ts
+Prompts.txt
+angular-ui-posix.zip

@@ -1,0 +1,43 @@
+@if (open) {
+  <div class="dialog-overlay" (click)="onClose()"></div>
+  <div class="inline-dialog" role="dialog" aria-modal="true" aria-label="Address editor">
+    <h3>{{ mode === 'edit' ? 'Edit Address' : 'Add Address' }}</h3>
+    <div class="dialog-form-grid">
+      <div class="input-group">
+        <label for="addressStreet1">Street 1</label>
+        <input id="addressStreet1" name="addressStreet1" [ngModelOptions]="{ standalone: true }" [ngModel]="address.street1" (ngModelChange)="setField('street1', $event)" />
+      </div>
+      <div class="input-group input-group-wide">
+        <label for="addressStreet2">Street 2</label>
+        <input id="addressStreet2" name="addressStreet2" [ngModelOptions]="{ standalone: true }" [ngModel]="address.street2" (ngModelChange)="setField('street2', $event)" />
+      </div>
+      <div class="input-group">
+        <label for="addressCity">City</label>
+        <input id="addressCity" name="addressCity" [ngModelOptions]="{ standalone: true }" [ngModel]="address.city" (ngModelChange)="setField('city', $event)" />
+      </div>
+      <div class="input-group">
+        <label for="addressCounty">County</label>
+        <input id="addressCounty" name="addressCounty" [ngModelOptions]="{ standalone: true }" [ngModel]="address.county" (ngModelChange)="setField('county', $event)" />
+      </div>
+      <div class="input-group">
+        <label for="addressState">State</label>
+        <input id="addressState" name="addressState" [ngModelOptions]="{ standalone: true }" [ngModel]="address.state" (ngModelChange)="setField('state', $event)" />
+      </div>
+      <div class="input-group">
+        <label for="addressZip">Zip</label>
+        <input id="addressZip" name="addressZip" [ngModelOptions]="{ standalone: true }" [ngModel]="address.zip" (ngModelChange)="setField('zip', $event)" />
+      </div>
+      <div class="input-group">
+        <label for="addressIsActive">Status</label>
+        <label class="checkbox-inline" for="addressIsActive">
+          <input id="addressIsActive" name="addressIsActive" type="checkbox" [ngModelOptions]="{ standalone: true }" [ngModel]="address.isActive" (ngModelChange)="setField('isActive', $event)" />
+          <span>{{ address.isActive ? 'Active' : 'Inactive' }}</span>
+        </label>
+      </div>
+    </div>
+    <div class="actions dialog-actions">
+      <button type="button" class="secondary" (click)="onClose()">Cancel</button>
+      <button type="button" class="primary" [disabled]="!address.street1.trim()" (click)="onSave()">Save Address</button>
+    </div>
+  </div>
+}

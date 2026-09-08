@@ -60,9 +60,9 @@ Invoke-AzCommand -Command {
 	az webapp deploy --resource-group $ResourceGroup --name $UiWebAppName --src-path $zipPath --type zip
 } -ErrorMessage "Web app deploy failed. Verify resource group and web app name."
 
-Write-Host "Applying Linux startup command for SPA fallback..."
+Write-Host "Applying Linux startup command for SPA server with cache headers..."
 Invoke-AzCommand -Command {
-	az webapp config set --resource-group $ResourceGroup --name $UiWebAppName --startup-file "pm2 serve /home/site/wwwroot --spa --no-daemon"
+	az webapp config set --resource-group $ResourceGroup --name $UiWebAppName --startup-file "node /home/site/wwwroot/server.js"
 } -ErrorMessage "Failed to set startup command."
 
 Write-Host "Deployment completed."

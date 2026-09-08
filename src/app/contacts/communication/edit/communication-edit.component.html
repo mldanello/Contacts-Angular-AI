@@ -1,0 +1,65 @@
+<section class="comm-section">
+  <div class="comm-section-header">
+    <h3>Addresses</h3>
+    <button type="button" class="secondary action-chip-button" (click)="addAddress.emit()">
+      <mat-icon svgIcon="contact-new"></mat-icon>
+      Add
+    </button>
+  </div>
+  @if (addresses.length === 0) {
+    <p class="comm-empty">No addresses yet.</p>
+  } @else {
+    <div class="comm-list">
+      @for (address of addresses; track $index) {
+        <app-address-display
+          [address]="address"
+          [showActions]="true"
+          (editAddress)="editAddress.emit($index)"
+          (deleteAddress)="deleteAddress.emit($index)">
+        </app-address-display>
+      }
+    </div>
+  }
+</section>
+
+<section class="comm-section">
+  <div class="comm-section-header">
+    <h3>Phone Numbers</h3>
+    <button type="button" class="secondary action-chip-button" (click)="addPhone.emit()">
+      <mat-icon svgIcon="contact-new"></mat-icon>
+      Add
+    </button>
+  </div>
+  @if (phones.length === 0) {
+    <p class="comm-empty">No phone numbers yet.</p>
+  } @else {
+    <div class="comm-list">
+      @for (phone of phones; track $index) {
+        <app-phone-display
+          [phone]="phone"
+          [showActions]="true"
+          (editPhone)="editPhone.emit($index)"
+          (deletePhone)="deletePhone.emit($index)">
+        </app-phone-display>
+      }
+    </div>
+  }
+</section>
+
+<app-address-edit
+  [open]="addressDialogOpen"
+  [mode]="addressDialogMode"
+  [address]="addressDialogForm"
+  (closeDialog)="closeAddressDialog.emit()"
+  (saveDialog)="saveAddressDialog.emit()"
+  (fieldChange)="addressFieldChange.emit($event)">
+</app-address-edit>
+
+<app-phone-edit
+  [open]="phoneDialogOpen"
+  [mode]="phoneDialogMode"
+  [phone]="phoneDialogForm"
+  (closeDialog)="closePhoneDialog.emit()"
+  (saveDialog)="savePhoneDialog.emit()"
+  (fieldChange)="phoneFieldChange.emit($event)">
+</app-phone-edit>
