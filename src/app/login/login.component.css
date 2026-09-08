@@ -62,3 +62,11 @@ button.secondary:disabled {
   margin-top: 1rem;
   color: #b00020;
 }
+
+.demo-hint {
+  margin-top: 0.85rem;
+  margin-bottom: 0;
+  font-size: 0.8rem;
+  color: #7a7a7a;
+  text-align: center;
+}
