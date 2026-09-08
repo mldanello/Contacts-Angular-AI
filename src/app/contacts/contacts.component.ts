@@ -1,15 +1,17 @@
 import { Component, computed, inject, signal } from '@angular/core';
 
-import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DomSanitizer } from '@angular/platform-browser';
-import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
+import { MatIconRegistry } from '@angular/material/icon';
 import { environment } from '../../environments/environment';
 import { ApiService } from '../services/api.service';
 import { AuthService } from '../services/auth.service';
 import { ContactList } from '../models/contact-list.model';
 import { ContactAddress, ContactDetail, ContactPhone, ContactSearchTag } from '../models/contact-detail.model';
-import { ContactSearchTagAddComponent } from './contact-seach-tag-add.component';
+import { ContactListComponent } from './list/contact-list.component';
+import { ContactDetailComponent } from './detail/contact-detail.component';
+import { ContactEditAction, ContactEditComponent, ContactEditUiAction } from './edit/contact-edit.component';
+import { CommunicationDisplayComponent } from './communication/display/communication-display.component';
 
 type EditTab = 'profile' | 'communication';
 type CommunicationStoreKey = number | 'new';
@@ -24,13 +26,11 @@ type DialogMode = 'add' | 'edit';
 @Component({
   standalone: true,
   selector: 'app-contacts',
-  imports: [FormsModule, MatIconModule, ContactSearchTagAddComponent],
+  imports: [ContactListComponent, ContactDetailComponent, ContactEditComponent, CommunicationDisplayComponent],
   templateUrl: './contacts.component.html',
   styleUrls: ['./contacts.component.css']
 })
 export class ContactsComponent {
-  private readonly listTagDisplayLimit = 4;
-
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private authService = inject(AuthService);
@@ -43,11 +43,9 @@ export class ContactsComponent {
   loading = signal(false);
   saving = signal(false);
   loadingDetail = signal(false);
-  showListSearchTags = signal(false);
   showResponsiveDebug = signal(false);
   allowResponsiveDebug = !environment.production;
-  listFilterDraft = signal('');
-  listFilterApplied = signal('');
+  noFilterResults = signal(false);
 
   contacts = signal<ContactList[]>([]);
   selectedContactId = signal<number | null>(null);
@@ -66,19 +64,6 @@ export class ContactsComponent {
 
   communicationDirty = computed(() => {
     return JSON.stringify(this.communicationDraft()) !== JSON.stringify(this.communicationBaseline());
-  });
-
-  filteredContacts = computed(() => {
-    const filterValue = this.listFilterApplied().trim().toLowerCase();
-    if (!filterValue) {
-      return this.contacts();
-    }
-
-    return this.contacts().filter(contact => {
-      const fullName = `${contact.firstName} ${contact.lastName}`.toLowerCase();
-      const tagText = (contact.searchTags ?? []).join(' ').toLowerCase();
-      return fullName.includes(filterValue) || tagText.includes(filterValue);
-    });
   });
 
   displaySearchTags = computed(() => {
@@ -133,6 +118,7 @@ export class ContactsComponent {
   }
 
   async selectContact(contact: ContactList, edit = false): Promise<void> {
+    this.noFilterResults.set(false);
     this.selectedContactId.set(contact.id);
     this.message.set('');
     this.error.set('');
@@ -146,6 +132,7 @@ export class ContactsComponent {
   }
 
   createNewContact(): void {
+    this.noFilterResults.set(false);
     this.selectedContactId.set(null);
     this.selectedContact.set(this.newContactTemplate());
     this.originalContact.set(null);
@@ -157,46 +144,31 @@ export class ContactsComponent {
     this.error.set('');
   }
 
-  toggleListSearchTags(): void {
-    this.showListSearchTags.update(value => !value);
+  onListSelect(contact: ContactList): void {
+    void this.selectContact(contact);
   }
 
-  setListFilterDraft(value: string): void {
-    this.listFilterDraft.set(value ?? '');
+  onListEdit(contact: ContactList): void {
+    void this.selectContact(contact, true);
   }
 
-  async clearListFilterDraft(): Promise<void> {
-    this.listFilterDraft.set('');
-    await this.applyListFilter();
+  onListDelete(contact: ContactList): void {
+    this.confirmDelete(contact.id, `${contact.firstName} ${contact.lastName}`);
   }
 
-  async applyListFilter(): Promise<void> {
-    this.listFilterApplied.set(this.listFilterDraft().trim());
+  onListCreate(): void {
+    this.createNewContact();
+  }
 
-    const filterValue = this.listFilterApplied().trim().toLowerCase();
-    const filteredList = !filterValue
-      ? this.contacts()
-      : this.contacts().filter(contact => {
-          const fullName = `${contact.firstName} ${contact.lastName}`.toLowerCase();
-          const tagText = (contact.searchTags ?? []).join(' ').toLowerCase();
-          return fullName.includes(filterValue) || tagText.includes(filterValue);
-        });
-
-    if (filteredList.length === 0) {
-      this.selectedContactId.set(null);
-      this.selectedContact.set(this.newContactTemplate());
-      this.originalContact.set(null);
-      this.profileBaseline.set({ ...this.selectedContact() });
-      this.loadCommunicationDraftForKey('new');
-      this.activeEditTab.set('profile');
-      this.editing.set(false);
-      return;
-    }
-
-    const firstFilteredContact = filteredList[0];
-    if (this.selectedContactId() !== firstFilteredContact.id) {
-      await this.selectContact(firstFilteredContact);
-    }
+  onListClearSelection(): void {
+    this.noFilterResults.set(true);
+    this.selectedContactId.set(null);
+    this.selectedContact.set(this.emptySelectionTemplate());
+    this.originalContact.set(null);
+    this.profileBaseline.set({ ...this.selectedContact() });
+    this.loadCommunicationDraftForKey('new');
+    this.activeEditTab.set('profile');
+    this.editing.set(false);
   }
 
   private async loadContactDetail(id: number): Promise<void> {
@@ -283,12 +255,75 @@ export class ContactsComponent {
     }));
   }
 
-  getVisibleListTags(contact: ContactList): string[] {
-    return contact.searchTags.slice(0, this.listTagDisplayLimit);
+  onEditContactChange(contact: ContactDetail): void {
+    this.selectedContact.set({ ...contact });
   }
 
-  getHiddenListTagCount(contact: ContactList): number {
-    return Math.max(contact.searchTags.length - this.listTagDisplayLimit, 0);
+  onContactEditUiAction(action: ContactEditUiAction): void {
+    switch (action.type) {
+      case 'save':
+        void this.saveContact();
+        break;
+      case 'cancel':
+        this.cancelEdit();
+        break;
+      case 'reset':
+        this.createNewContact();
+        break;
+      case 'delete':
+        this.confirmDelete(this.selectedContact().id, `${this.selectedContact().firstName} ${this.selectedContact().lastName}`);
+        break;
+      case 'set-tab':
+        this.setActiveEditTab(action.tab);
+        break;
+    }
+  }
+
+  onContactEditAction(action: ContactEditAction): void {
+    switch (action.type) {
+      case 'contact-change':
+        this.onEditContactChange(action.contact);
+        break;
+      case 'tags-change':
+        this.setContactSearchTags(action.tags);
+        break;
+      case 'address-add':
+        this.openAddAddressDialog();
+        break;
+      case 'address-edit':
+        this.openEditAddressDialog(action.index);
+        break;
+      case 'address-delete':
+        this.removeAddress(action.index);
+        break;
+      case 'address-dialog-close':
+        this.closeAddressDialog();
+        break;
+      case 'address-dialog-save':
+        this.saveAddressDialog();
+        break;
+      case 'address-field-change':
+        this.setAddressDialogField(action.field, action.value as never);
+        break;
+      case 'phone-add':
+        this.openAddPhoneDialog();
+        break;
+      case 'phone-edit':
+        this.openEditPhoneDialog(action.index);
+        break;
+      case 'phone-delete':
+        this.removePhone(action.index);
+        break;
+      case 'phone-dialog-close':
+        this.closePhoneDialog();
+        break;
+      case 'phone-dialog-save':
+        this.savePhoneDialog();
+        break;
+      case 'phone-field-change':
+        this.setPhoneDialogField(action.field, action.value as never);
+        break;
+    }
   }
 
   async saveContact(): Promise<void> {
@@ -537,6 +572,26 @@ export class ContactsComponent {
       isActive: true,
       createdAt: now,
       modifiedAt: now,
+      contactAddresses: [],
+      contactPhones: [],
+      contactSearchTags: []
+    };
+  }
+
+  private emptySelectionTemplate(): ContactDetail {
+    return {
+      id: 0,
+      tenantId: 1,
+      firstName: '',
+      middleName: '',
+      lastName: '',
+      companyName: '',
+      email: '',
+      web: '',
+      notes: '',
+      isActive: false,
+      createdAt: '',
+      modifiedAt: '',
       contactAddresses: [],
       contactPhones: [],
       contactSearchTags: []

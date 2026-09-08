@@ -1,0 +1,31 @@
+<div class="communication-display">
+  <section class="comm-section">
+    <div class="comm-section-header">
+      <h3>Addresses</h3>
+    </div>
+    @if (addresses.length === 0) {
+      <p class="comm-empty">No addresses.</p>
+    } @else {
+      <div class="comm-list">
+        @for (address of addresses; track $index) {
+          <app-address-display [address]="address"></app-address-display>
+        }
+      </div>
+    }
+  </section>
+
+  <section class="comm-section">
+    <div class="comm-section-header">
+      <h3>Phone Numbers</h3>
+    </div>
+    @if (phones.length === 0) {
+      <p class="comm-empty">No phone numbers.</p>
+    } @else {
+      <div class="comm-list">
+        @for (phone of phones; track $index) {
+          <app-phone-display [phone]="phone"></app-phone-display>
+        }
+      </div>
+    }
+  </section>
+</div>

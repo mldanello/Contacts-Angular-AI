@@ -1,0 +1,36 @@
+<div class="contact-view">
+  <div class="detail-row"><span class="detail-label">Id</span><span>{{ contact.id }}</span></div>
+  <div class="detail-row"><span class="detail-label">First name</span><span>{{ contact.firstName }}</span></div>
+  <div class="detail-row"><span class="detail-label">Middle name</span><span>{{ contact.middleName }}</span></div>
+  <div class="detail-row"><span class="detail-label">Last name</span><span>{{ contact.lastName }}</span></div>
+  <div class="detail-row"><span class="detail-label">Company name</span><span>{{ contact.companyName }}</span></div>
+  <div class="detail-row"><span class="detail-label">Email</span><span>{{ contact.email }}</span></div>
+  <div class="detail-row"><span class="detail-label">Web</span><span>{{ contact.web }}</span></div>
+  <div class="detail-row"><span class="detail-label">Notes</span><span>{{ contact.notes }}</span></div>
+  <div class="detail-row detail-row-tags">
+    <span class="detail-label">Search tags</span>
+    <span class="tag-pill-list">
+      @if (displaySearchTags.length === 0) {
+        <span class="tag-pill tag-pill-empty">No tags</span>
+      } @else {
+        @for (tagText of displaySearchTags; track $index) {
+          <span class="tag-pill">{{ tagText }}</span>
+        }
+      }
+    </span>
+  </div>
+  <div class="detail-row"><span class="detail-label">Is active</span><span>{{ contact.isActive ? 'Yes' : 'No' }}</span></div>
+  <div class="detail-row"><span class="detail-label">Created at</span><span>{{ contact.createdAt }}</span></div>
+  <div class="detail-row"><span class="detail-label">Modified at</span><span>{{ contact.modifiedAt }}</span></div>
+</div>
+
+<div class="actions detail-actions">
+  <button class="primary" type="button" (click)="onEdit()">
+    <mat-icon svgIcon="contact-edit"></mat-icon>
+    edit
+  </button>
+  <button class="danger" type="button" (click)="onDelete()">
+    <mat-icon svgIcon="contact-delete"></mat-icon>
+    Delete
+  </button>
+</div>

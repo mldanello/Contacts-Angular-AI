@@ -1,0 +1,61 @@
+.comm-section {
+  border: 1px solid #e2e8f0;
+  border-radius: 0.85rem;
+  padding: 0.7rem;
+  background: #ffffff;
+}
+
+.comm-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.55rem;
+}
+
+.comm-section-header h3 {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.comm-empty {
+  margin: 0;
+  color: #64748b;
+  font-size: 0.88rem;
+}
+
+.comm-list {
+  display: grid;
+  gap: 0.45rem;
+}
+
+button.secondary {
+  border: 1px solid #cbd5e1;
+  background: #f8fafc;
+  color: #334155;
+  border-radius: 0.75rem;
+  height: 1.9rem;
+  padding: 0 1.05rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.92rem;
+}
+
+.comm-section-header button.action-chip-button {
+  height: 1.12rem;
+  padding: 0 0.5rem;
+  border-radius: 999px;
+  border-color: #8fc8d4;
+  background: linear-gradient(180deg, #e8fafe 0%, #d7f0f6 100%);
+  color: #1f4b5a;
+  font-size: 0.64rem;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.comm-section-header button.action-chip-button mat-icon {
+  width: 0.78rem;
+  height: 0.78rem;
+}

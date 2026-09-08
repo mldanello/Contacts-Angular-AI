@@ -1,0 +1,135 @@
+.contact-view {
+  display: grid;
+  gap: 0.75rem;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 1rem;
+  padding: 1rem;
+}
+
+.detail-row {
+  display: grid;
+  grid-template-columns: 9rem 1fr;
+  gap: 0.75rem;
+  align-items: start;
+  min-width: 0;
+}
+
+.detail-row span:last-child {
+  overflow-wrap: anywhere;
+}
+
+.detail-row-tags {
+  align-items: center;
+}
+
+.detail-label {
+  font-weight: 600;
+  color: #475569;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.detail-label::after {
+  content: ':';
+  margin-left: 0.25rem;
+  color: #64748b;
+}
+
+.tag-pill-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.tag-pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.5rem;
+  padding: 0.1rem 0.65rem;
+  border-radius: 999px;
+  border: 1px solid #c9f1f7;
+  background: #f2fdff;
+  color: #334155;
+  font-size: 0.78rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.tag-pill-empty {
+  border-color: #d6f3f8;
+  background: #f7feff;
+  color: #475569;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.detail-actions {
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+  padding-top: 0.75rem;
+  padding-bottom: 0.25rem;
+  border-top: 1px solid #e2e8f0;
+  background: linear-gradient(to top, #ffffff 70%, rgba(255, 255, 255, 0.92) 100%);
+}
+
+@media (max-width: 1280px) {
+  .detail-actions {
+    display: none;
+  }
+}
+
+button.primary {
+  border: none;
+  color: #fff;
+  background: #2563eb;
+  border-radius: 0.75rem;
+  height: 1.9rem;
+  padding: 0 1.05rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.92rem;
+}
+
+button.danger {
+  border: none;
+  background: #ef4444;
+  color: white;
+  border-radius: 0.75rem;
+  height: 1.9rem;
+  padding: 0 1.05rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.92rem;
+}
+
+@media (max-width: 740px) {
+  .detail-row {
+    grid-template-columns: 1fr;
+    gap: 0.35rem;
+  }
+
+  .detail-label {
+    text-align: left;
+  }
+
+  .detail-actions {
+    position: sticky;
+    bottom: 0;
+    z-index: 3;
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    padding-bottom: calc(0.35rem + env(safe-area-inset-bottom));
+    background: linear-gradient(to top, #ffffff 72%, rgba(255, 255, 255, 0.9) 100%);
+  }
+}

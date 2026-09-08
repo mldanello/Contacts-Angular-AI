@@ -1,0 +1,26 @@
+<div class="comm-item">
+  <div class="comm-item-text">
+    <strong>{{ address.street1 || 'Address' }}</strong>
+    <span>{{ address.street1 }}</span>
+    @if (address.street2) {
+      <span>{{ address.street2 }}</span>
+    }
+    <span>{{ address.city }} {{ address.state }} {{ address.zip }}</span>
+    @if (address.county) {
+      <span>{{ address.county }}</span>
+    }
+    @if (!address.isActive) {
+      <span>Inactive</span>
+    }
+  </div>
+  @if (showActions) {
+    <div class="comm-item-actions">
+      <button type="button" class="secondary icon-button" (click)="onEdit()" aria-label="Edit address" title="Edit">
+        <mat-icon svgIcon="contact-edit"></mat-icon>
+      </button>
+      <button type="button" class="danger icon-button" (click)="onDelete()" aria-label="Delete address" title="Delete">
+        <mat-icon svgIcon="contact-delete"></mat-icon>
+      </button>
+    </div>
+  }
+</div>

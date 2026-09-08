@@ -1,0 +1,165 @@
+<form #contactForm="ngForm" (submit)="onSubmit($event)" [attr.aria-busy]="saving">
+  <fieldset class="contact-edit-fieldset" [disabled]="saving">
+    <div class="contact-id-row input-group-wide" aria-label="Contact identifier">
+      <span class="contact-id-pill">
+        {{ contact.id > 0 ? ('ID ' + contact.id) : 'New Contact' }}
+      </span>
+    </div>
+
+    <div class="edit-tab-bar input-group-wide" role="tablist" aria-label="Contact edit sections">
+      <button
+        type="button"
+        class="tab-button"
+        [class.active]="activeEditTab === 'profile'"
+        (click)="setActiveTab('profile')"
+        aria-label="Show profile tab">
+        Profile
+        @if (profileDirty) {
+          <span class="tab-dirty-dot" aria-label="Profile has unsaved changes"></span>
+        }
+      </button>
+      <button
+        type="button"
+        class="tab-button"
+        [class.active]="activeEditTab === 'communication'"
+        (click)="setActiveTab('communication')"
+        aria-label="Show communication tab">
+        Communication
+        @if (communicationDirty) {
+          <span class="tab-dirty-dot" aria-label="Communication has unsaved changes"></span>
+        }
+      </button>
+    </div>
+
+    <div class="tab-panel profile-panel input-group-wide" [class.active]="activeEditTab === 'profile'">
+      <div class="input-group">
+        <label for="firstName">First name</label>
+        <input id="firstName" name="firstName" #firstName="ngModel" [ngModel]="contact.firstName" (ngModelChange)="setField('firstName', $event)" />
+      </div>
+
+      <div class="input-group">
+        <label for="middleName">Middle name</label>
+        <input id="middleName" name="middleName" [ngModel]="contact.middleName" (ngModelChange)="setField('middleName', $event)" />
+      </div>
+
+      <div class="input-group" [class.invalid]="lastName.invalid && lastName.touched">
+        <label for="lastName">Last name</label>
+        <input id="lastName" name="lastName" #lastName="ngModel" [ngModel]="contact.lastName" (ngModelChange)="setField('lastName', $event)" required />
+        @if (lastName.invalid && lastName.touched) {
+          <div class="field-error">Last name is required.</div>
+        }
+      </div>
+
+      <div class="input-group">
+        <label for="companyName">Company name</label>
+        <input id="companyName" name="companyName" [ngModel]="contact.companyName" (ngModelChange)="setField('companyName', $event)" />
+      </div>
+
+      <div class="input-group" [class.invalid]="email.invalid && email.touched">
+        <label for="email">Email</label>
+        <input id="email" name="email" #email="ngModel" type="email" [ngModel]="contact.email" (ngModelChange)="setField('email', $event)" />
+        @if (email.invalid && email.touched) {
+          <div class="field-error">Enter a valid email address.</div>
+        }
+      </div>
+
+      <div class="input-group">
+        <label for="web">Web</label>
+        <input id="web" name="web" [ngModel]="contact.web" (ngModelChange)="setField('web', $event)" />
+      </div>
+
+      <div class="input-group input-group-wide">
+        <label for="notes">Notes</label>
+        <textarea id="notes" name="notes" rows="6" [ngModel]="contact.notes" (ngModelChange)="setField('notes', $event)"></textarea>
+      </div>
+
+      <div class="input-group input-group-wide search-tags-edit-group">
+        <label class="search-tags-edit-label">Search tags</label>
+        <div class="search-tags-edit-control">
+          <app-contact-search-tag-add
+            [contactId]="contact.id"
+            [tags]="contact.contactSearchTags"
+            (tagsChange)="setTags($event)">
+          </app-contact-search-tag-add>
+        </div>
+      </div>
+
+      <div class="metadata-row input-group-wide" aria-label="Contact metadata">
+        <div class="metadata-inline-item metadata-inline-item-active">
+          <label class="metadata-inline-label" for="isActive">Is active</label>
+          <label class="checkbox-inline metadata-inline-control" for="isActive">
+            <input
+              id="isActive"
+              name="isActive"
+              type="checkbox"
+              [disabled]="noFilterResults"
+              [ngModel]="contact.isActive"
+              (ngModelChange)="setIsActive($event)" />
+            <span>{{ isActiveLabel }}</span>
+          </label>
+        </div>
+
+        <div class="metadata-inline-item metadata-inline-item-date">
+          <label class="metadata-inline-label" for="createdAt">Created at</label>
+          <input class="metadata-date-input" id="createdAt" name="createdAt" [ngModel]="createdAtDisplay" readonly tabindex="-1" />
+        </div>
+
+        <div class="metadata-inline-item metadata-inline-item-date">
+          <label class="metadata-inline-label" for="modifiedAt">Modified at</label>
+          <input class="metadata-date-input" id="modifiedAt" name="modifiedAt" [ngModel]="modifiedAtDisplay" readonly tabindex="-1" />
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-panel communication-panel input-group-wide" [class.active]="activeEditTab === 'communication'">
+      <app-communication-edit
+        [addresses]="addresses"
+        [phones]="phones"
+        [addressDialogOpen]="addressDialogOpen"
+        [addressDialogMode]="addressDialogMode"
+        [addressDialogForm]="addressDialogForm"
+        [phoneDialogOpen]="phoneDialogOpen"
+        [phoneDialogMode]="phoneDialogMode"
+        [phoneDialogForm]="phoneDialogForm"
+        (addAddress)="editAction.emit({ type: 'address-add' })"
+        (editAddress)="onAddressEdit($event)"
+        (deleteAddress)="onAddressDelete($event)"
+        (closeAddressDialog)="editAction.emit({ type: 'address-dialog-close' })"
+        (saveAddressDialog)="editAction.emit({ type: 'address-dialog-save' })"
+        (addressFieldChange)="onAddressFieldChange($event)"
+        (addPhone)="editAction.emit({ type: 'phone-add' })"
+        (editPhone)="onPhoneEdit($event)"
+        (deletePhone)="onPhoneDelete($event)"
+        (closePhoneDialog)="editAction.emit({ type: 'phone-dialog-close' })"
+        (savePhoneDialog)="editAction.emit({ type: 'phone-dialog-save' })"
+        (phoneFieldChange)="onPhoneFieldChange($event)">
+      </app-communication-edit>
+    </div>
+
+    <div class="actions detail-actions">
+      <button class="primary" type="submit" [disabled]="saving || contactForm.invalid">
+        @if (saving) {
+          <span class="button-spinner" aria-hidden="true"></span>
+          Saving...
+        } @else {
+          <mat-icon svgIcon="contact-save"></mat-icon>
+          Save
+        }
+      </button>
+      <button class="secondary" type="button" [disabled]="noFilterResults" (click)="uiAction.emit({ type: 'cancel' })">
+        <mat-icon svgIcon="contact-cancel"></mat-icon>
+        Cancel
+      </button>
+      <button class="secondary" type="button" [disabled]="noFilterResults" (click)="uiAction.emit({ type: 'reset' })">
+        <mat-icon svgIcon="contact-reset"></mat-icon>
+        Reset
+      </button>
+      @if (contact.id > 0) {
+        <button class="danger" type="button" (click)="uiAction.emit({ type: 'delete' })">
+          <mat-icon svgIcon="contact-delete"></mat-icon>
+          Delete
+        </button>
+      }
+    </div>
+  </fieldset>
+</form>

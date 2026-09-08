@@ -1,0 +1,47 @@
+.comm-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.5rem;
+  align-items: start;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.7rem;
+  padding: 0.5rem 0.55rem;
+  background: #f8fafc;
+}
+
+.comm-item-text {
+  display: grid;
+  gap: 0.15rem;
+  font-size: 0.84rem;
+  color: #334155;
+}
+
+.comm-item-text strong {
+  color: #0f172a;
+}
+
+.comm-item-actions {
+  display: flex;
+  gap: 0.28rem;
+}
+
+.comm-item-actions .icon-button {
+  width: 1.58rem;
+  height: 1.58rem;
+  padding: 0.14rem;
+  border: none;
+  background: #ffffff;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 14px rgba(15, 23, 42, 0.2);
+}
+
+.comm-item-actions .icon-button.secondary {
+  color: #2563eb;
+}
+
+.comm-item-actions .icon-button.danger {
+  color: #ef4444;
+}
